@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { axiosInstance } from "../utils/axios";
 import qs from "qs";
@@ -34,4 +34,27 @@ function useCampaigns(page: any = 1, limit: any = 6 , mainStatus?: string, title
   });
 }
 
-export default useCampaigns;
+
+function usePostCampaign()  {
+return useMutation({
+  mutationFn : async (message) => {
+   const response = await axiosInstance.post(
+          "/api/campaigns",
+          {
+            message,
+          },
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+            },
+          }
+        );
+        return response.data
+  }
+  
+})
+
+}
+
+export  {useCampaigns , usePostCampaign};

@@ -18,6 +18,8 @@ import Step7 from "../../../components/templates/Dashboard/NewCapmain/Step7/Step
 import { axiosInstance } from "../../../utils/axios";
 import { getSessionStorage, setSessionStorage } from "../../../utils/helpers";
 import JSZip from "jszip";
+import { useMutation } from "@tanstack/react-query";
+import { usePostCampaign } from "../../../hooks/useCampaigns";
 
 function NewCampaign() {
   const [direction, setDirection] = useState<"next" | "back">("next");
@@ -26,6 +28,7 @@ function NewCampaign() {
     getSessionStorage("campaignMessageText") || ""
   );
   const [step, setStep] = useState(1);
+  const { mutate: createCampaign } = usePostCampaign();
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [successMessage, setSuccessMessage] = useState<null | string>(null);
   const [uploadMessage, setUploadMessage] = useState<null | string>(null);
@@ -151,21 +154,8 @@ function NewCampaign() {
 
         setSessionStorage("campaignMessageText", message);
         setSessionStorage("campaignMessageVariables", checkedVariables);
+        createCampaign(message);
 
-        const response = await axiosInstance.post(
-          "/api/campaigns",
-          {
-            message,
-          },
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
-            },
-          }
-        );
-
-        console.log("Campaign created successfully:", response.data);
         setStep((s) => s + 1);
       } catch (error) {
         console.error("Error creating campaign:", error);
