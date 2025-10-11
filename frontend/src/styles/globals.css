@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import url("./fonts.css");
+
+@theme {
+  --color-primary: #25d366;
+  --color-secondary: #075e54;
+  --color-accent: #34b7f1;
+  --color-neutral-primary: #dcf8c6;
+  --color-neutral-secondary: #ece5dd;
+  --color-neutral-tertiary: #D9D9D9;
+  --color-btn-primary-normal: #25d366;
+  --color-btn-primary-hover: #29ef73;
+  --color-btn-primary-tapped: #1da450;
+  --color-btn-primary-disable: #e0e0e0;
+  --color-semantic-success: #4caf50;
+  --color-semantic-error: #f44336;
+  --color-semantic-warning: #ffc107;
+  --color-semantic-accent: #34b7f1;
+  --color-gray-black: #404040;
+
+  --font-B-Nazanin: "B-Nazanin";
+  --font-B-Homa: "B-Homa";
+  --font-inter: "Inter";
+
+  --breakpoint-mobile: 412px;
+  --breakpoint-tablet: 834px;
+  --breakpoint-desktop: 1440px;
+}
+
+@utility custom-btn {
+  @apply bg-primary text-white rounded-[55px] active:bg-btn-primary-tapped transition-all duration-200 hover:bg-btn-primary-hover shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] hover:scale-[98%];
+}
+
+@utility shadow-normal {
+  @apply shadow-[2px_4px_4px_0_rgba(0,0,0,0.25)];
+}
+
+@utility main-input {
+  @apply border-[1.5px] border-secondary rounded-[5px] text-secondary text-[32px] bg-neutral-primary/30 px-5 py-3  max-w-[263px] placeholder:text-neutral-tertiary;
+}
+
+:root {
+  direction: rtl;
+}
+
+body {
+  font-family: "B-Homa";
+}
+
+button {
+  cursor: pointer;
+}
+
+.btn-shadow {
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+input,
+select {
+  outline: none;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: url("/frontend/public/images/dashboard/new-campaign/select-arrow.svg")
+    no-repeat right 10px center;
+  background-color: white;
+  padding-right: 30px; /* جا برای فلش */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* برای فایرفاکس */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* برای تقویم */
+
+.rmdp-header {
+  @apply !mt-10;
+}
+.rmdp-calendar.rmdp-rtl {
+  @apply px-6 pb-8;
+}
+.rmdp-header > div {
+  @apply justify-center;
+}
+.rmdp-header-values {
+  @apply bg-neutral-primary/30 !text-secondary border border-secondary text-[36px] w-[263px] h-15 rounded-[5px] !mx-4;
+}
+.rmdp-calendar.rmdp-rtl {
+  @apply !w-[462px] h-[400px] top-3;
+}
+
+.rmdp-day-picker > div {
+  @apply w-full;
+}
+.rmdp-week:first-child {
+  @apply border-b;
+}
+
+.rmdp-week {
+  @apply mb-2;
+}
+
+.rmdp-week .rmdp-week-day {
+  @apply text-semantic-success !text-2xl pb-3;
+}
+
+.rmdp-day {
+  @apply !font-B-Nazanin;
+}
+
+span.sd {
+  @apply !text-4xl;
+}
+.weekend-day {
+  @apply !text-semantic-error ;
+}
+
+.rmdp-day.rmdp-disabled span {
+  @apply text-semantic-error text-4xl;
+}
+.rmdp-day span {
+  @apply !text-2xl text-secondary;
+}
+
+.rmdp-day.rmdp-today.rmdp-selected span {
+  @apply !bg-neutral-primary !text-secondary;
+}
+
+.css-1dimb5e-singleValue {
+  @apply !text-secondary;
+}
+
+.css-b62m3t-container {
+  @apply max-md:w-full w-auto;
+}
+
+.css-1u9des2-indicatorSeparator {
+  display: none;
+}
+
+
+td,
+th {
+  @apply text-nowrap;
+}

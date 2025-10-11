@@ -1,0 +1,203 @@
+import React from "react";
+import { axiosInstance } from "../../../../../utils/axios";
+
+const handleDownloadClick = async () => {
+  try {
+    const response = await axiosInstance.get("/api/campaigns/excel-template/download" , {
+      responseType : "blob"
+    })
+      console.log("response" , response);
+      
+     const url = window.URL.createObjectURL(response.data); // response.data خودش blob هست
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "recipients-template.xlsx"; // نام فایل هنگام دانلود
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+    console.log("Excel template downloaded successfully");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+function Step2() {
+  return (
+    <div className="mx-auto w-[88%] ">
+      <div className="   rounded-[20px] bg-[#EEEEEE] mt-6.5 lg:mt-8   overflow-y-auto flex items-center justify-center h-[560px] lg:h-[600px]">
+        <button
+          className="w-[80.62%] h-[74%] border-[3px] border-dotted border-[#8C8C8C]  rounded-2xl flex items-center justify-center flex-col text-sm sm:text-2xl md:text-4xl px-[50px] text-justify sm:text-center leading-7  sm:leading-10 text-gray-black gap-12 sm:gap-[88px] lg:gap-[94px] cursor-pointer"
+          onClick={handleDownloadClick}
+        >
+          <span className="">
+            فایل اکسل زیر را دانلود کنید و اطلاعات مورد نظر را وارد کنید .
+          </span>
+
+          <svg
+            className="w-[100px] h-[80px] md:w-[127px] md:h-[115px]"
+            viewBox="0 0 127 115"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g filter="url(#filter0_d_169_339)">
+              <path
+                d="M106.125 40.3125L69.375 4V40.3125H106.125Z"
+                fill="url(#paint0_linear_169_339)"
+              />
+            </g>
+            <g filter="url(#filter1_d_169_339)">
+              <path
+                d="M106.125 40.7174V107C106.125 108.105 105.23 109 104.125 109H20.625C19.5204 109 18.625 108.105 18.625 107L18.625 6C18.625 4.89543 19.5204 4 20.625 4H68.5702C69.0923 4 69.5938 4.20422 69.9674 4.56903L105.522 39.2865C105.908 39.6628 106.125 40.1787 106.125 40.7174Z"
+                stroke="#D9D9D9"
+                shapeRendering="crispEdges"
+              />
+            </g>
+            <g filter="url(#filter2_d_169_339)">
+              <path
+                d="M117.5 93.25L105.688 105.062L93.875 93.25"
+                stroke="#075E54"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M105.688 105.062V70.5"
+                stroke="#075E54"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+            <rect y="38" width="57" height="24" rx="3" fill="#075E54" />
+            <path
+              d="M5.54167 57V44.5H11.9583V46.2917H7.54167V48.5833H10.9861V50.3333H7.54167V55.1667H11.9583V57H5.54167ZM12.8333 57L17.4583 49.7917L14.0417 44.5H16.4167L17.7917 46.625C17.9676 46.8935 18.1389 47.1713 18.3056 47.4583C18.4722 47.7454 18.6528 48.0787 18.8472 48.4583C19.0231 48.0787 19.1944 47.7454 19.3611 47.4583C19.5278 47.162 19.6991 46.8843 19.875 46.625L21.2778 44.5H23.5417L20.1528 49.7222L24.7917 57H22.375L19.8611 53.0417C19.6944 52.7639 19.5231 52.4815 19.3472 52.1944C19.1713 51.8981 18.9815 51.5602 18.7778 51.1806C18.5741 51.5602 18.3843 51.8981 18.2083 52.1944C18.0417 52.4815 17.8704 52.7639 17.6944 53.0417L15.1667 57H12.8333ZM31.3611 57.25C30.4537 57.25 29.6019 57.0833 28.8056 56.75C28.0093 56.4074 27.3102 55.9398 26.7083 55.3472C26.1065 54.7546 25.6343 54.0648 25.2917 53.2778C24.9583 52.4907 24.7917 51.6481 24.7917 50.75C24.7917 49.8519 24.9583 49.0093 25.2917 48.2222C25.6343 47.4352 26.1065 46.7454 26.7083 46.1528C27.3102 45.5602 28.0093 45.0972 28.8056 44.7639C29.6019 44.4213 30.4537 44.25 31.3611 44.25C32.213 44.25 33.0139 44.3981 33.7639 44.6944C34.5231 44.9907 35.1944 45.4074 35.7778 45.9444L35.1944 48.3611C34.8148 47.7315 34.2917 47.2176 33.625 46.8194C32.9676 46.412 32.2269 46.2083 31.4028 46.2083C30.5694 46.2083 29.8148 46.412 29.1389 46.8194C28.4722 47.2269 27.9398 47.7731 27.5417 48.4583C27.1528 49.1435 26.9583 49.9074 26.9583 50.75C26.9583 51.5833 27.1528 52.3472 27.5417 53.0417C27.9398 53.7269 28.4722 54.2731 29.1389 54.6806C29.8148 55.088 30.5694 55.2917 31.4028 55.2917C32.2269 55.2917 32.9676 55.088 33.625 54.6806C34.2917 54.2731 34.8148 53.7593 35.1944 53.1389L35.7778 55.5556C35.1944 56.0833 34.5231 56.5 33.7639 56.8056C33.0139 57.1019 32.213 57.25 31.3611 57.25ZM37.8268 57V44.5H44.2435V46.2917H39.8268V48.5833H43.2713V50.3333H39.8268V55.1667H44.2435V57H37.8268ZM46.5768 57V44.5H48.6602V55.1667H52.7018V57H46.5768Z"
+              fill="white"
+            />
+            <defs>
+              <filter
+                id="filter0_d_169_339"
+                x="64.375"
+                y="1"
+                width="44.75"
+                height="44.3125"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="-1" dy="1" />
+                <feGaussianBlur stdDeviation="2" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1_dropShadow_169_339"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1_dropShadow_169_339"
+                  result="shape"
+                />
+              </filter>
+              <filter
+                id="filter1_d_169_339"
+                x="15.125"
+                y="0.5"
+                width="96.5"
+                height="114"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="1" dy="1" />
+                <feGaussianBlur stdDeviation="2" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1_dropShadow_169_339"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1_dropShadow_169_339"
+                  result="shape"
+                />
+              </filter>
+              <filter
+                id="filter2_d_169_339"
+                x="86.875"
+                y="63.5"
+                width="39.625"
+                height="50.5625"
+                filterUnits="userSpaceOnUse"
+                colorInterpolationFilters="sRGB"
+              >
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feColorMatrix
+                  in="SourceAlpha"
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                  result="hardAlpha"
+                />
+                <feOffset dx="1" dy="1" />
+                <feGaussianBlur stdDeviation="2" />
+                <feComposite in2="hardAlpha" operator="out" />
+                <feColorMatrix
+                  type="matrix"
+                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0"
+                />
+                <feBlend
+                  mode="normal"
+                  in2="BackgroundImageFix"
+                  result="effect1_dropShadow_169_339"
+                />
+                <feBlend
+                  mode="normal"
+                  in="SourceGraphic"
+                  in2="effect1_dropShadow_169_339"
+                  result="shape"
+                />
+              </filter>
+              <linearGradient
+                id="paint0_linear_169_339"
+                x1="61.9375"
+                y1="47.75"
+                x2="140.687"
+                y2="-24.875"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0.148126" stopColor="white" />
+                <stop offset="1" stopColor="#737373" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Step2;

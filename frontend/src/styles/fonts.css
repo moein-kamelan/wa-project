@@ -1,0 +1,18 @@
+@font-face {
+    font-family: "B-Homa";
+    src: url("/public/fonts/BHoma.woff2");
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: "B-Nazanin";
+    src: url("/public/fonts/BNazanin.woff2");
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Inter";
+    src: url("/public/fonts/Inter_18pt-Regular.ttf") ;
+    font-weight: 400;
+    font-display: swap;
+}
