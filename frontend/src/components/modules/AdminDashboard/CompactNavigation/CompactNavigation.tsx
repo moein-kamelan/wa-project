@@ -1,11 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import SidebarToolTip from "../SidbarTooltip/SidebarTooltip";
 
 function CompactNavigation() {
   return (
-    <div className="flex flex-col bg-secondary w-28 pt-35 shrink-0 z-50">
+    <div className="flex flex-col bg-secondary w-28 pt-35 shrink-0 z-[100]">
       <ul className="flex flex-col items-center">
-        <li className="w-full  ">
+        <li className="w-full  relative  group">
           <NavLink
             className={({ isActive }) =>
               `flex item-center justify-center w-full h-full py-7 *:text-white *:hover:text-primary ${
@@ -37,8 +38,11 @@ function CompactNavigation() {
               />
             </svg>
           </NavLink>
+
+          <SidebarToolTip>صفحه اصلی</SidebarToolTip>
         </li>
-        <li className="w-full  ">
+
+        <li className="w-full relative  group">
           <NavLink
             className={({ isActive }) =>
               `flex item-center justify-center w-full h-full py-7 *:text-white *:hover:text-primary ${
@@ -77,8 +81,9 @@ function CompactNavigation() {
               />
             </svg>
           </NavLink>
+          <SidebarToolTip>مدیریت کاربران</SidebarToolTip>
         </li>
-        <li className="w-full  ">
+        <li className="w-full  relative  group">
           <NavLink
             className={({ isActive }) =>
               `flex item-center justify-center w-full h-full py-7 *:text-white *:hover:text-primary ${
@@ -117,8 +122,9 @@ function CompactNavigation() {
               />
             </svg>
           </NavLink>
+          <SidebarToolTip>مدیریت پکیج ها</SidebarToolTip>
         </li>
-        <li className="w-full  ">
+        <li className="w-full  relative  group">
           <NavLink
             className={({ isActive }) =>
               `flex item-center justify-center w-full h-full py-7 *:text-white *:hover:text-primary ${
@@ -165,8 +171,11 @@ function CompactNavigation() {
               />
             </svg>
           </NavLink>
+             <SidebarToolTip>
+            گزارش ها
+           </SidebarToolTip>
         </li>
-        <li className="w-full  ">
+        <li className="w-full  relative  group">
           <NavLink
             className={({ isActive }) =>
               `flex item-center justify-center w-full h-full py-7 *:text-white *:hover:text-primary ${
@@ -208,8 +217,11 @@ function CompactNavigation() {
               />
             </svg>
           </NavLink>
+             <SidebarToolTip>
+            تنظیمات
+           </SidebarToolTip>
         </li>
-        <li className="w-full  ">
+        <li className="w-full  relative  group">
           <button
             className={
               "flex items-center justify-center text-white hover:text-primary w-full h-full py-7"
@@ -263,7 +275,13 @@ function CompactNavigation() {
                 strokeLinejoin="round"
               />
             </svg>
+
+
+            
           </button>
+              <SidebarToolTip>
+            خروج
+           </SidebarToolTip>
         </li>
       </ul>
     </div>

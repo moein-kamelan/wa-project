@@ -6,6 +6,7 @@ import AdminDashboardHeader from "../../../components/modules/AdminDashboard/Adm
 import CustomInput from "../../../components/modules/CustomInput/CustomInput";
 import InputContainer from "../../../components/modules/InputContainer/InputContainer";
 import { axiosInstance } from "../../../utils/axios";
+import useUsers from "../../../hooks/useUsers";
 
 const options = [
   { value: "وضعیت کاربر", label: "وضعیت کاربر" },
@@ -24,28 +25,30 @@ function UsersManagment() {
     "editInfos" | "sendDetails" | "restrictions"
   >("editInfos");
   const [isCollapseOpen, setIsCollapseOpen] = useState(false);
-  const [usersData , setUsersData] = useState<any>(null)
+  const {data} = useUsers()
+  // const [usersData , setUsersData] = useState<any>(null)
+  
 
-  useEffect(() => {
-    try {
-      const fetchUsers = async() => {
-        const response = await axiosInstance.get("api/admin/users" , {
-          headers : {
-            Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw"
-          }
-        })
-        console.log('response:', response)
+  // useEffect(() => {
+  //   try {
+  //     const fetchUsers = async() => {
+  //       const response = await axiosInstance.get("api/admin/users" , {
+  //         headers : {
+  //           Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw"
+  //         }
+  //       })
+  //       console.log('response:', response)
 
-        setUsersData(response.data)
-      }
-      fetchUsers()
-    } catch (error) {
-      console.log("error in fetching user list => " , error);
+  //       setUsersData(response.data)
+  //     }
+  //     fetchUsers()
+  //   } catch (error) {
+  //     console.log("error in fetching user list => " , error);
       
-    }
+  //   }
     
     
-  } , [])
+  // } , [])
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto relative ">
@@ -466,7 +469,7 @@ function UsersManagment() {
                       </tr>
                     </thead>
                     <tbody>
-               {usersData?.users.map((user : any) => (
+               {data?.users.map((user : any) => (
                        <tr className="p-2 " key={user._id}>
                         <td className="border border-secondary py-3 px-3">
                           <label className="flex items-center justify-center w-full h-full ">

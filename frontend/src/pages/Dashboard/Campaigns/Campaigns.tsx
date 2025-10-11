@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+// import useCampaigns from "../../../hooks/useCampaigns";
+import { axiosInstance } from "../../../utils/axios";
 import useCampaigns from "../../../hooks/useCampaigns";
 
 function Campaigns() {
@@ -13,29 +15,29 @@ function Campaigns() {
   const {data } = useCampaigns(page , limit)
   const pagination = data?.pagination
   
-  // useEffect(() => {
-  //   try {
-  //     const fetchCampaigns = async () => {
-  //       const response = await axiosInstance.get(
-  //         `/api/campaigns?page=${page}&limit=${limit}`,
-  //         {
-  //           headers: {
-  //             Authorization:
-  //               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
-  //           },
-  //         }
-  //       );
-  //       console.log("response:", response);
+//  useEffect(() => {
+//   const fetchCampaigns = async () => {
+//     try {
+//       const response = await axiosInstance.get(
+//         `/api/campaigns?page=${page}&limit=${limit}`,
+//         {
+//           headers: {
+//             Authorization:
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+//           },
+//         }
+//       );
+//       console.log("response:", response);
+//       setCampaigns(response.data.campaigns);
+//       setPagination(response.data.pagination);
+//     } catch (error) {
+//       console.log("error in fetching campaigns data", error);
+//     }
+//   };
 
-  //       setCampaigns(response.data.campaigns);
-  //       setPagination(response.data.pagination);
-  //     };
+//   fetchCampaigns();
+// }, [page, limit]);
 
-  //     fetchCampaigns();
-  //   } catch (error) {
-  //     console.log("error in fetching campaigns data", error);
-  //   }
-  // }, [page, limit]);
 
   const handleBackPageClick = () => {
     if (page > 1)
