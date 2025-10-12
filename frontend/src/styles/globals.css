@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import url("./fonts.css");
-
+@import "react-toastify/dist/ReactToastify.css";
 @theme {
   --color-primary: #25d366;
   --color-secondary: #075e54;
@@ -21,6 +21,7 @@
   --font-B-Nazanin: "B-Nazanin";
   --font-B-Homa: "B-Homa";
   --font-inter: "Inter";
+  --font-Yekan: "Yekan";
 
   --breakpoint-mobile: 412px;
   --breakpoint-tablet: 834px;
@@ -43,8 +44,12 @@
   direction: rtl;
 }
 
+
+
 body {
   font-family: "B-Homa";
+  
+
 }
 
 button {

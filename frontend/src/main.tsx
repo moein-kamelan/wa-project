@@ -6,7 +6,6 @@ import './styles/globals.css'
 import "./styles/fonts.css"
 import ReduxProvider from './redux/ReduxProvider.tsx'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
 const queryClient = new QueryClient()
 
 

@@ -3,13 +3,20 @@ import './App.css'
 
 import { RouterProvider } from 'react-router-dom'
 import routes from './routes';
+import {  ToastContainer } from 'react-toastify';
 
 
 
 function App() {
 
+    return (
+      <>
+      
+      <ToastContainer stacked/>
 
-  return  <RouterProvider router={routes} />;
+    <RouterProvider router={routes} />
+      </>
+    )
   
 }
 

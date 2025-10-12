@@ -8,9 +8,9 @@ type CampaignModalProps = {
 }
 
 const options = [
-  { value: "متعادل", label: "کند: 20 ثانیه" },
-  { value: "strawberry", label: "متعادل: 10 ثانیه" },
-  { value: "vanilla", label: "سریع: 5 ثانیه" },
+  { value: "متعادل", label: "فعال" },
+  { value: "strawberry", label: "غیر فعال" },
+  { value: "vanilla", label: "مسدود" },
 ];
 
 function CampaignModal({setOpenModalId} : CampaignModalProps) {
@@ -115,11 +115,11 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
 
    <Select
               options={options}
-              placeholder="تغییر وضعیت"
+              placeholder="فیلتر"
               components={{ DropdownIndicator }}
               classNames={{
                 control: () =>
-                  "!border !border-[1.5px] !border-secondary rounded-[5px]  !cursor-pointer     shadow-sm   !outline !outline-secondary focus:shadow-0 md:w-[263px] text-[32px]   ",
+                  "!border !border-[1.5px] !border-secondary rounded-[5px] *:h-9 !cursor-pointer     shadow-sm   !outline !outline-secondary focus:shadow-0 md:w-[263px] text-xl max-w-[222px]   ",
                 option: ({ isFocused, isSelected }) =>
                   `px-3 py-2 cursor-pointer !text-2xl border-r-6 border-neutral-tertiary ${
                     isSelected
@@ -131,14 +131,14 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
                 menu: () =>
                   "!mt-0 border border-gray-200 font-B-Homa rounded-lg shadow-lg bg-white overflow-hidden  max-w-[263px]",
                 placeholder: () =>
-                  "   !text-neutral-tertiary text-lg sm:text-[32px]  ",
+                  "   !text-neutral-tertiary text-lg text-xl  ",
                  singleValue: () => "!text-primary ",
               }}
             />
           
   
   
-  <img src="../../../../../public/images/excel.png" alt="excel" />
+  <img src="../../../../../public/images/excel.png" alt="excel"  className='size-10'/>
 
 </div>
 

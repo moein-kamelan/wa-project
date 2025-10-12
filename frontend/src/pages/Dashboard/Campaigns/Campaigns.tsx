@@ -74,7 +74,8 @@ const [openModalId , setOpenModalId] = useState<string | null>(null)
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-auto">
+    <div className="flex flex-col h-screen overflow-auto relative">
+      <div className={`inset-0 absolute bg-secondary/35 transition-all duration-500 ${openModalId !== null ? "visible opacity-100" : "invisible opacity-0"}`}></div>
       <div className="flex items-center justify-between pr-3 pl-11.5 mb-[92px] shrink-0">
         <div className="relative">
           <svg
@@ -372,7 +373,7 @@ const [openModalId , setOpenModalId] = useState<string | null>(null)
               </div>
 
               <div className="h-9 relative  size-10.5 flex items-center justify-center z-[100]">
-                  {openPopoverId === campaign._id && <Popover modalId={campaign._id} setOpenModalId={setOpenModalId}/>}
+                  {openPopoverId === campaign._id && <Popover setOpenPopoverId={setOpenPopoverId} campaign={campaign} setOpenModalId={setOpenModalId} page={page}/>}
 
                 <button className={`flex items-center justify-center relative group size-7 hover:bg-secondary rounded-full z-20 transition-all duration-200 ${openPopoverId === campaign._id ? "bg-secondary rounded-full" : ""}`} onClick={() => setOpenPopoverId(prev => prev === campaign._id ? null : campaign._id)}>
                 <Tooltip>جزئیات</Tooltip>
