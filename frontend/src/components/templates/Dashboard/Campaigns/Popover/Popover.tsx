@@ -1,7 +1,7 @@
 import React from "react";
 import { axiosInstance } from "../../../../../utils/axios";
 import { useDeleteCampaign } from "../../../../../hooks/useCampaigns";
-import { errorToast, showErrorToast } from "../../../../../utils/tostify";
+import { errorToast, showErrorToast, showWarnToast } from "../../../../../utils/tostify";
 
 type PopoverProps = {
   setOpenModalId: (value: string | null) => void;
@@ -60,6 +60,9 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
+          if(campaign.status === ("draft" || "ready" || "failed")) {
+            showWarnToast("شما فقط مجاز به دانلود گزارش کمپین های در حال اجرا ، متوقف شده و تکمیل شده هستید")
+          }
           downloadReport(campaign._id);
           setOpenPopoverId(null);
         }}
@@ -71,7 +74,7 @@ function Popover({
         onClick={() => {
           if(campaign.status === "running") {
             
-            showErrorToast("شما مجاز به حذف کمپین در حال اجرا نیستید ")
+            showWarnToast("شما مجاز به حذف کمپین در حال اجرا نیستید ")
             return
           }
           removeCampaign(campaign._id );

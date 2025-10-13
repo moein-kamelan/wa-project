@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import url("./fonts.css");
-@import "react-toastify/dist/ReactToastify.css";
 @theme {
   --color-primary: #25d366;
   --color-secondary: #075e54;
@@ -160,4 +159,22 @@ span.sd {
 td,
 th {
   @apply text-nowrap;
+}
+
+/* toast styles */
+
+.Toastify__toast , .Toastify__progress-bar-theme--light {
+  background: transparent ;
+  box-shadow: none ;
+  border-radius: 0 ;
+  padding: 0 ;
+}
+
+.Toastify__toast-body {
+  margin: 0 ;
+  padding: 0 ;
+}
+
+.Toastify__progress-bar {
+  visibility: hidden;
 }

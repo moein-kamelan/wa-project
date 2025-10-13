@@ -12,7 +12,18 @@ function App() {
     return (
       <>
       
-      <ToastContainer stacked/>
+      <ToastContainer stacked   
+       position= "top-right"
+    autoClose= {5000}
+    customProgressBar = {false}
+    
+    hideProgressBar= {true}
+    closeOnClick= {true}
+    pauseOnHover= {false}
+    draggable= {true}
+    closeButton = {false}
+      
+      />
 
     <RouterProvider router={routes} />
       </>
