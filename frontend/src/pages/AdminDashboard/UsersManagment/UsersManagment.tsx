@@ -33,7 +33,7 @@ function UsersManagment() {
   //     const fetchUsers = async() => {
   //       const response = await axiosInstance.get("api/admin/users" , {
   //         headers : {
-  //           Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww
+  //           Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q
 
   //         }
   //       })
@@ -469,7 +469,7 @@ function UsersManagment() {
                     </thead>
                     <tbody>
                       {data?.users.map((user: any) => (
-                        <tr className="p-2 " key={user._id}>
+                        <tr className="p-2 " key={user.id}>
                           <td className="border border-secondary py-3 px-3">
                             <label className="flex items-center justify-center w-full h-full ">
                               <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>

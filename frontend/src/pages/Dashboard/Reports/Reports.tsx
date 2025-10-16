@@ -43,7 +43,7 @@ function Reports() {
           },
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
           },
         });
         console.log("response:", response);
@@ -80,19 +80,19 @@ function Reports() {
   function calculateStatus(status: string | null) {
     switch (status) {
       case "all": {
-        return ["draft", "ready", "running", "completed", "paused", "failed"];
+        return ["DRAFT", "READY", "RUNNING", "COMPLETED", "PAUSED", "FAILED"];
       }
       case "active": {
-        return ["running", "completed"];
+        return ["RUNNING", "COMPLETED"];
       }
       case "inactive": {
-        return ["draft", "ready"];
+        return ["DRAFT", "READY"];
       }
       case "blocked": {
-        return ["failed" , "paused"];
+        return ["FAILED", "PAUSED"];
       }
       default: {
-        return ["draft", "ready", "running", "completed", "paused", "failed"];
+        return ["DRAFT", "READY", "RUNNING", "COMPLETED", "PAUSED", "FAILED"];
       }
     }
   }
@@ -107,8 +107,8 @@ function Reports() {
 
   const generateStatus = (status: string) => {
     switch (status) {
-      case "draft":
-      case "ready": {
+      case "DRAFT":
+      case "READY": {
         return (
           <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
             در انتظار ارسال
@@ -116,14 +116,14 @@ function Reports() {
         );
       }
 
-      case "completed": {
+      case "COMPLETED": {
         return <span className="text-primary">ارسال شد</span>;
       }
-      case "running": {
+      case "RUNNING": {
         return <span className="text-neutral-tertiary">در حال ارسال</span>;
       }
-      case "paused":
-      case "failed": {
+      case "PAUSED":
+      case "FAILED": {
         return <span className="text-semantic-error ">ارسال ناموفق</span>;
       }
     }
@@ -672,7 +672,7 @@ function Reports() {
                   </thead>
                   <tbody className="*:hover:bg-neutral-secondary">
                     {campaigns?.map((campaign) => (
-                      <tr key={campaign._id} className="p-2 ">
+                      <tr key={campaign.id} className="p-2 ">
                         <td className="border border-secondary py-2.5 px-3">
                           <label className="flex items-center justify-center w-full h-full ">
                             <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
@@ -683,7 +683,7 @@ function Reports() {
                           {campaign.title}
                         </td>
                         <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
-                          {campaign?.progress.sent} / {campaign?.progress.total}
+                          {campaign?.deliveredCount} / {campaign?.totalRecipients}
                         </td>
                         <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
                           {new Date(campaign.createdAt).toLocaleString(
@@ -696,7 +696,7 @@ function Reports() {
                           )}
                         </td>
                         <td className="border border-secondary py-2.5 px-3 *:text-2xl">
-{generateStatus(campaign.status)}                    
+                          {generateStatus(campaign.status)}
                         </td>
                         <td className="border border-secondary py-2.5 px-3">
                           <button

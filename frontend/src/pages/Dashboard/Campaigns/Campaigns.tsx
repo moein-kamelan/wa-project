@@ -30,8 +30,8 @@ function Campaigns() {
 
   const generateIcon = (status: string) => {
     switch (status) {
-      case "draft":
-      case "ready": {
+      case "DRAFT":
+      case "READY": {
         return (
           <div className="flex items-center justify-center btn-shadow py-1 bg-neutral-tertiary rounded-[55px] w-[136px] h-10.5 text-gray-black text-xl text-center">
             در انتظار ارسال
@@ -39,14 +39,14 @@ function Campaigns() {
         );
       }
 
-      case "completed": {
+      case "COMPLETED": {
         return (
           <div className="text-white bg-primary btn-shadow py-1 rounded-[55px] text-2xl w-[136px] h-10.5 text-center">
             ارسال شد
           </div>
         );
       }
-      case "running": {
+      case "RUNNING": {
         return (
           <div
             className="flex items-center justify-center btn-shadow  border border-primary rounded-[55px] text-2xl text-white [-webkit-text-stroke:0.8px_#25d366]
@@ -57,8 +57,8 @@ function Campaigns() {
           </div>
         );
       }
-      case "paused":
-      case "failed": {
+      case "PAUSED":
+      case "FAILED": {
         return (
           <div className="flex items-center justify-center btn-shadow py-1 bg-semantic-error rounded-[55px] w-[136px] h-10.5 text-white text-xl text-center ">
             ارسال ناموفق
@@ -189,7 +189,7 @@ function Campaigns() {
           >
             {data?.campaigns?.map((campaign: any) => (
               <div
-                key={campaign._id}
+                key={campaign.id}
                 className="bg-white px-10.5 py-[21px] grid grid-cols-[1fr_1fr_1fr_1fr_42px] items-center justify-center rounded-tl-[6px] rounded-tr-[6px] text-2xl shadow-[2px_-4px_4px_0px_rgba(0,0,0,0.25)] hover:!shadow-[8px_0px_20px_0px_rgba(7,94,84,1)] hover:scale-101 transition duration-300"
               >
                 <div className="flex items-center gap-2">
@@ -286,7 +286,7 @@ function Campaigns() {
                   </svg>
 
                   <span>
-                    {campaign.progress.total}/{campaign.progress.sent}
+                    {campaign.deliverdCount}/{campaign.totalRecipients}
                   </span>
                 </div>
 

@@ -27,7 +27,7 @@ function NewCampaign() {
   const [message, setMessage] = useState(
     getSessionStorage("campaignMessageText") || ""
   );
-  const [step, setStep] = useState(6);
+  const [step, setStep] = useState(1);
   const { mutate: createCampaign } = usePostCampaign();
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [successMessage, setSuccessMessage] = useState<null | string>(null);
@@ -102,26 +102,22 @@ function NewCampaign() {
       }
       setUploadMessage("در حال آپلود فایل ...");
 
-      await axiosInstance.post(
-        "/api/campaigns/68e61f5b9c887771c55f86ff/recipients",
-        formData,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (event) => {
-            setTotalData(event.total);
+      await axiosInstance.post("/api/campaigns/1/recipients", formData, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (event) => {
+          setTotalData(event.total);
 
-            if (event.total) {
-              const percent = Math.round((event.loaded * 100) / event.total);
-              setUploadPercent(percent);
-              setLoadedData(event.loaded);
-            }
-          },
-        }
-      );
+          if (event.total) {
+            const percent = Math.round((event.loaded * 100) / event.total);
+            setUploadPercent(percent);
+            setLoadedData(event.loaded);
+          }
+        },
+      });
       setUploadMessage(null);
       setSuccessMessage("فایل با موفقیت آپلود شد.");
       setTimeout(() => {
@@ -218,12 +214,12 @@ function NewCampaign() {
         }
 
         const response = await axiosInstance.post(
-          "/api/campaigns/68e61f5b9c887771c55f86ff/attachment/temp",
+          "/api/campaigns/1/attachment/temp",
           formData,
           {
             headers: {
               Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
               "Content-Type": "multipart/form-data",
             },
             onUploadProgress: (event) => {
@@ -261,15 +257,12 @@ function NewCampaign() {
 
   const handleRemoveCampaignClick = async () => {
     try {
-      const response = await axiosInstance.delete(
-        "/api/campaigns/68e61f5b9c887771c55f86ff",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
-          },
-        }
-      );
+      const response = await axiosInstance.delete("/api/campaigns/1", {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
+        },
+      });
 
       console.log("deltedCampaign => ", response);
     } catch (error) {

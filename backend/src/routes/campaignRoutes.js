@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticateSession } = require('../middlewares/auth');
+const { validateCampaignStatus } = require('../middlewares/validateCampaignStatus');
 const { 
     checkCampaignStartPermission, 
     getSubscriptionInfo 
@@ -23,11 +24,9 @@ const {
     generateQRCode,
     checkConnection,
     startCampaign,
-    getProgress,
     getMyCampaigns,
     searchCampaigns,
     getCampaignDetails,
-    generateReport,
     downloadReport,
     pauseCampaign,
     resumeCampaign,
@@ -52,8 +51,8 @@ router.get('/subscription', getSubscriptionInfo, require('../controllers/campaig
 
 // Campaign CRUD operations
 router.post('/', createCampaign);
-router.get('/', getMyCampaigns);
-router.get('/search', searchCampaigns);
+router.get('/', validateCampaignStatus, getMyCampaigns);
+router.get('/search', validateCampaignStatus, searchCampaigns);
 router.get('/:campaignId', getCampaignDetails);
 router.delete('/:campaignId', deleteCampaign);
 
@@ -97,8 +96,6 @@ router.post('/:campaignId/pause', pauseCampaign);
 router.post('/:campaignId/resume', resumeCampaign);
 
 // Progress and reporting
-router.get('/:campaignId/progress', getProgress);
-router.get('/:campaignId/report', generateReport);
 router.get('/:campaignId/report/download', downloadReport);
 
 module.exports = router;

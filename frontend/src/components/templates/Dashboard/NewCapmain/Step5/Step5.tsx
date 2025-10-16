@@ -80,18 +80,18 @@ const Step5 = forwardRef<Step5Ref, Step5Props>(({ onSubmit }, ref) => {
 
             const payload = {
               interval: values.interval,
-              sendType: "scheduled",
+              sendType: "SCHEDULED",
               scheduledAt: gregorianDate.toISOString(),
               timezone: "Asia/Tehran",
             };
 
             const response = await axiosInstance.put(
-              "/api/campaigns/68e61f5b9c887771c55f86ff/interval",
+              "/api/campaigns/1/interval",
               payload,
               {
                 headers: {
                   Authorization:
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
                 },
               }
             );
