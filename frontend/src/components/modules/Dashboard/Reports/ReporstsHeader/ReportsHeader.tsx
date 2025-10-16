@@ -63,7 +63,7 @@ function ReportsHeader({ title }: ReportsHeaderProps) {
             </filter>
           </defs>
         </svg>
-        <span className="absolute right-0 left-0 top-6 mx-auto text-5xl text-center text-white text-shadow-[2px_4px_4px_rgb(255,255,255,0.25)]">
+        <span className="absolute right-0 left-0 top-6 mx-auto text-4xl text-center text-white text-shadow-[2px_4px_4px_rgb(255,255,255,0.25)]">
           {title}
         </span>
       </div>

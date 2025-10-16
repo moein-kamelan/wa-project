@@ -7,6 +7,7 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { axiosInstance } from "../../../utils/axios";
+import CheckboxInput from "../../../components/modules/CheckboxInput/CheckboxInput";
 
 const options = [
   { value: "متعادل", label: "فعال" },
@@ -42,7 +43,7 @@ function Reports() {
           },
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
           },
         });
         console.log("response:", response);
@@ -62,13 +63,13 @@ function Reports() {
         return "همه ی کمپین ها";
       }
       case "active": {
-        return "کمپین های فعال";
-      }
-      case "inactive": {
-        return "کمپین های غیر فعال";
+        return "کمپین های موفق";
       }
       case "blocked": {
-        return "کمپین های مسدود";
+        return "کمپین های ناموفق";
+      }
+      case "inactive": {
+        return "کمپین های در انتظار ارسال";
       }
       default: {
         return "همه ی کمپین ها";
@@ -85,10 +86,10 @@ function Reports() {
         return ["running", "completed"];
       }
       case "inactive": {
-        return ["draft", "ready", "paused"];
+        return ["draft", "ready"];
       }
       case "blocked": {
-        return ["failed"];
+        return ["failed" , "paused"];
       }
       default: {
         return ["draft", "ready", "running", "completed", "paused", "failed"];
@@ -107,8 +108,7 @@ function Reports() {
   const generateStatus = (status: string) => {
     switch (status) {
       case "draft":
-      case "ready":
-      case "paused": {
+      case "ready": {
         return (
           <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
             در انتظار ارسال
@@ -122,7 +122,7 @@ function Reports() {
       case "running": {
         return <span className="text-neutral-tertiary">در حال ارسال</span>;
       }
-
+      case "paused":
       case "failed": {
         return <span className="text-semantic-error ">ارسال ناموفق</span>;
       }
@@ -318,7 +318,7 @@ function Reports() {
             <img src="../../../../../public/images/excel.png" alt="excel" />
           </div>
           <div className="flex flex-col w-full grow">
-            <div className=" grow  bg-neutral-tertiary/47 rounded-[20px] p-3.5">
+            {/* <div className=" grow  bg-neutral-tertiary/47 rounded-[20px] p-3.5">
               <div className="flex items-center gap-4">
                 <Select
                   options={options}
@@ -457,10 +457,7 @@ function Reports() {
                   <tbody className="*:hover:bg-neutral-secondary">
                     <tr className="p-2 ">
                       <td className="border border-secondary p-2 ">
-                        <label className="flex items-center justify-center w-full h-full ">
-                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                          <input type="checkbox" className="hidden" />
-                        </label>
+                        <CheckboxInput/>
                       </td>
                       <td className="border border-secondary p-2  lg:text-2xl">
                         admin
@@ -536,9 +533,9 @@ function Reports() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
 
-            {/* <div
+            <div
               className="grow max-h-[562px]    overflow-y-auto overflow-x-auto [&::-webkit-scrollbar]:w-3
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:w-9/12
@@ -838,7 +835,7 @@ function Reports() {
                   </defs>
                 </svg>
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

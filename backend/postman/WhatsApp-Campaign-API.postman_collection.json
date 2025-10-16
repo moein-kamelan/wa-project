@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "WhatsApp Campaign API",
-    "description": "Complete API collection for WhatsApp Campaign Messaging system with real-time WebSocket support. Updated with Session-Based Authentication and MySQL/Prisma migration (December 2024).",
+    "description": "Complete API collection for WhatsApp Campaign Messaging system with real-time WebSocket support. Updated with Session-Based Authentication (December 2024).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -53,7 +53,7 @@
           "response": []
         },
         {
-          "name": "Register User (with OTP)",
+          "name": "Register User",
           "request": {
             "method": "POST",
             "header": [
@@ -64,34 +64,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"علی احمدی\",\n  \"username\": \"ali_ahmadi\",\n  \"email\": \"ali@example.com\",\n  \"phone\": \"09120000000\",\n  \"password\": \"Passw0rd123!\",\n  \"verificationToken\": \"{{verification_token}}\"\n}"
+              "raw": "{\n  \"name\": \"علی احمدی\",\n  \"email\": \"ali@example.com\",\n  \"phone\": \"09120000000\",\n  \"password\": \"Passw0rd123!\",\n  \"verificationToken\": \"{{verification_token}}\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/user/register",
               "host": ["{{base_url}}"],
               "path": ["api", "user", "register"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Register User (Simple - No OTP)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"علی احمدی\",\n  \"username\": \"ali_ahmadi\",\n  \"email\": \"ali@example.com\",\n  \"phone\": \"09120000000\",\n  \"password\": \"Passw0rd123!\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/user/register-simple",
-              "host": ["{{base_url}}"],
-              "path": ["api", "user", "register-simple"]
             }
           },
           "response": []

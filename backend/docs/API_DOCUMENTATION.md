@@ -5,67 +5,6 @@
 http://localhost:3000
 ```
 
-## Database Migration Notice
-**⚠️ Important**: This API has been migrated from MongoDB to MySQL with Prisma ORM. 
-
-### Key Changes:
-- **Database**: MongoDB → MySQL
-- **ORM**: Mongoose → Prisma
-- **ID Format**: `_id` (ObjectId) → `id` (Integer)
-- **Response Structure**: Updated to reflect MySQL schema
-
-### Migration Benefits:
-- ✅ Better performance with relational queries
-- ✅ ACID compliance for transactions
-- ✅ Strong data consistency
-- ✅ Better scalability
-- ✅ Advanced querying capabilities
-
-## Environment Variables
-
-### Required Variables
-```env
-# Database Configuration (MySQL with Prisma)
-DATABASE_URL="mysql://username:password@localhost:3306/whatsapp_campaign_db"
-
-# JWT Configuration
-JWT_SECRET="your-super-secret-jwt-key-here"
-
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-
-# Session Configuration
-SESSION_SECRET="your-session-secret-key"
-
-# WhatsApp Configuration
-WHATSAPP_SESSION_PATH="./sessions"
-
-# Email Configuration (for OTP)
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT=587
-EMAIL_USER="your-email@gmail.com"
-EMAIL_PASS="your-app-password"
-
-# SMS Configuration (for OTP)
-SMS_API_KEY="your-sms-api-key"
-
-# Payment Gateway Configuration
-ZARINPAL_MERCHANT_ID="your-zarinpal-merchant-id"
-```
-
-### Database Setup
-1. **Install MySQL** on your system
-2. **Create Database**:
-   ```sql
-   CREATE DATABASE whatsapp_campaign_db;
-   ```
-3. **Run Migrations**:
-   ```bash
-   npm run db:generate
-   npm run db:migrate
-   ```
-
 ## Authentication Methods
 
 ### 🔐 Session-Based Authentication (Primary - Recommended)
@@ -281,7 +220,7 @@ Logout from all devices (requires authentication).
 
 ## 👤 User Endpoints
 
-### Register User (with OTP)
+### Register User
 **POST** `/api/user/register`
 
 Register a new user with OTP verification.
@@ -303,45 +242,13 @@ Register a new user with OTP verification.
 {
   "message": "User registered successfully",
   "user": {
-    "id": 1,
+    "id": "507f1f77bcf86cd799439011",
     "name": "علی احمدی",
     "username": "ali_ahmadi",
     "email": "ali@example.com"
   }
 }
 ```
-
-### Register User (Simple - No OTP)
-**POST** `/api/user/register-simple`
-
-Register a new user without OTP verification (simplified registration).
-
-**Request Body:**
-```json
-{
-  "name": "علی احمدی",
-  "username": "ali_ahmadi",
-  "email": "ali@example.com",
-  "phone": "09120000000",
-  "password": "Passw0rd123!"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "User registered successfully (without OTP)",
-  "user": {
-    "id": 1,
-    "name": "علی احمدی",
-    "username": "ali_ahmadi",
-    "email": "ali@example.com",
-    "phone": "09120000000"
-  }
-}
-```
-
-**Note:** Phone number is optional in simple registration.
 
 ### Login User
 **POST** `/api/user/login`
@@ -472,7 +379,7 @@ Get list of available packages (Public).
 {
   "packages": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "title": "پکیج طلایی",
       "description": "دسترسی کامل به تمام امکانات",
       "price": 490000,
@@ -627,10 +534,10 @@ Get current user's orders.
 {
   "orders": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "user": "507f1f77bcf86cd799439012",
       "package": {
-        "id": 3,
+        "_id": "507f1f77bcf86cd799439013",
         "title": "پکیج طلایی",
         "price": 490000
       },
@@ -725,7 +632,7 @@ Get list of users (Admin only).
 {
   "users": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "name": "علی احمدی",
       "username": "ali_ahmadi",
       "email": "ali@example.com",
@@ -810,15 +717,15 @@ Get list of transactions (Admin only).
 {
   "transactions": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "order": {
-        "id": 2,
+        "_id": "507f1f77bcf86cd799439012",
         "user": {
-          "id": 3,
+          "_id": "507f1f77bcf86cd799439013",
           "name": "علی احمدی"
         },
         "package": {
-          "id": 4,
+          "_id": "507f1f77bcf86cd799439014",
           "title": "پکیج طلایی"
         }
       },
@@ -1570,30 +1477,24 @@ Start sending messages.
 }
 ```
 
-### Get Campaign Details (with Progress)
-**GET** `/api/campaigns/:campaignId?include=progress`
+### Get Campaign Progress
+**GET** `/api/campaigns/:campaignId/progress`
 
-Get campaign details with real-time progress.
+Get real-time campaign progress.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Query Parameters:**
-- `include=progress` - Include progress statistics
 
 **Response:**
 ```json
 {
   "campaign": {
-    "id": 1,
-    "title": "کمپین فروش ویژه",
-    "status": "RUNNING",
+    "id": "507f1f77bcf86cd799439011",
+    "status": "running",
     "progress": {
       "total": 150,
       "sent": 45,
       "failed": 2,
-      "delivered": 43,
-      "remaining": 100,
-      "deliveryRate": 30
+      "delivered": 43
     },
     "startedAt": "2024-01-01T12:00:00.000Z"
   }
@@ -1620,7 +1521,7 @@ Get list of user's campaigns with filtering options.
 {
   "campaigns": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "title": "کمپین فروش ویژه",
       "status": "completed",
       "progress": {
@@ -1672,7 +1573,7 @@ Advanced search for campaigns with multiple filters and sorting options.
 {
   "campaigns": [
     {
-      "id": 1,
+      "_id": "507f1f77bcf86cd799439011",
       "title": "کمپین فروش ویژه",
       "status": "completed",
       "progress": {
@@ -1704,41 +1605,35 @@ Advanced search for campaigns with multiple filters and sorting options.
 }
 ```
 
-### Get Campaign Details (with Report)
-**GET** `/api/campaigns/:campaignId?include=report`
+### Generate Campaign Report
+**GET** `/api/campaigns/:campaignId/report`
 
-Get campaign details with comprehensive report data.
+Generate campaign report (JSON format).
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Query Parameters:**
-- `include=report` - Include detailed report data
 
 **Response:**
 ```json
 {
-  "campaign": {
-    "id": 1,
-    "title": "کمپین فروش ویژه",
-    "status": "RUNNING",
-    "report": {
-      "totalMessages": 150,
-      "successfulMessages": 45,
-      "failedMessages": 2,
-      "deliveredMessages": 43,
-      "remainingMessages": 103,
-      "deliveryRate": 30.0,
-      "startedAt": "2024-01-01T12:00:00.000Z",
-      "completedAt": null,
-      "duration": 1800000,
-      "isCompleted": false,
-      "errors": [
-        {
-          "phone": "09120000001",
-          "error": "Invalid phone number"
-        }
-      ]
-    }
+  "message": "Report generated successfully",
+  "report": {
+    "campaignId": "507f1f77bcf86cd799439011",
+    "status": "running",
+    "totalMessages": 150,
+    "successfulMessages": 45,
+    "failedMessages": 2,
+    "remainingMessages": 103,
+    "deliveryRate": 30.0,
+    "startedAt": "2024-01-01T12:00:00.000Z",
+    "completedAt": null,
+    "duration": 1800000,
+    "isCompleted": false,
+    "errors": [
+      {
+        "phone": "09120000001",
+        "error": "Invalid phone number"
+      }
+    ]
   }
 }
 ```
@@ -1746,72 +1641,14 @@ Get campaign details with comprehensive report data.
 ### Download Campaign Report
 **GET** `/api/campaigns/:campaignId/report/download`
 
-Download campaign report as Excel file with comprehensive campaign data.
+Download campaign report as Excel file.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
 
 **Response:**
 - **Content-Type**: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
-- **Content-Disposition**: `attachment; filename="campaign-report-{campaignId}-{date}.xlsx"`
-- **Body**: Excel file with three sheets:
-
-#### Sheet 1: Campaign Summary
-| Field | Description |
-|-------|-------------|
-| Campaign ID | Unique campaign identifier |
-| Title | Campaign title |
-| Status | Current campaign status |
-| Total Messages | Total number of recipients |
-| Sent | Successfully sent messages |
-| Failed | Failed messages |
-| Delivered | Delivered messages |
-| Remaining | Remaining messages to send |
-| Delivery Rate | Success rate percentage |
-| Started At | Campaign start time (Persian format) |
-| Completed At | Campaign completion time (Persian format) |
-| Created At | Campaign creation time (Persian format) |
-
-#### Sheet 2: Recipients Details
-| Field | Description |
-|-------|-------------|
-| Phone | Recipient phone number |
-| Name | Recipient name |
-| Status | Message status (SENT, FAILED, PENDING, DELIVERED) |
-| Sent At | Message send time (Persian format) |
-| Error | Error message if failed |
-
-#### Sheet 3: Campaign Message
-| Field | Description |
-|-------|-------------|
-| Campaign Message | The actual message content sent to recipients |
-
-**Example Usage:**
-```javascript
-// Frontend download
-const downloadReport = async (campaignId) => {
-  const response = await fetch(`/api/campaigns/${campaignId}/report/download`, {
-    method: 'GET',
-    credentials: 'include'
-  });
-  
-  if (response.ok) {
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `campaign-report-${campaignId}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  }
-};
-```
-
-**Notes:**
-- Reports are only available for campaigns with status: `RUNNING`, `PAUSED`, or `COMPLETED`
-- File includes Persian date formatting for better readability
-- Excel file is generated in real-time with current campaign data
+- **Content-Disposition**: `attachment; filename="campaign-report-{campaignId}.xlsx"`
+- **Body**: Excel file with two sheets:
   - **Campaign Summary**: Overview of campaign statistics
   - **Recipients Details**: Detailed list of all recipients with status
 
