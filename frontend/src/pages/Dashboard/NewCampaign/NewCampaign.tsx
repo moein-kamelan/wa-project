@@ -102,16 +102,6 @@ function NewCampaign() {
       }
       setUploadMessage("در حال آپلود فایل ...");
 
-<<<<<<< HEAD
-      await axiosInstance.post("/api/campaigns/1/recipients", formData, {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (event) => {
-          setTotalData(event.total);
-=======
       await axiosInstance.post(
         "/api/campaigns/68e61f5b9c887771c55f86ff/recipients",
         formData,
@@ -123,7 +113,6 @@ function NewCampaign() {
           },
           onUploadProgress: (event) => {
             setTotalData(event.total);
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
           if (event.total) {
             const percent = Math.round((event.loaded * 100) / event.total);
@@ -233,11 +222,7 @@ function NewCampaign() {
           {
             headers: {
               Authorization:
-<<<<<<< HEAD
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
-=======
                 "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
               "Content-Type": "multipart/form-data",
             },
             onUploadProgress: (event) => {
@@ -275,14 +260,6 @@ function NewCampaign() {
 
   const handleRemoveCampaignClick = async () => {
     try {
-<<<<<<< HEAD
-      const response = await axiosInstance.delete("/api/campaigns/1", {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
-        },
-      });
-=======
       const response = await axiosInstance.delete(
         "/api/campaigns/68e61f5b9c887771c55f86ff",
         {
@@ -292,7 +269,6 @@ function NewCampaign() {
           },
         }
       );
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
       console.log("deltedCampaign => ", response);
     } catch (error) {
