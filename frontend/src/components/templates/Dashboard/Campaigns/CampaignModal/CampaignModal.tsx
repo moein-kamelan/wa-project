@@ -1,5 +1,6 @@
 import React from 'react'
 import Select, { components } from "react-select";
+import CheckboxInput from '../../../../modules/CheckboxInput/CheckboxInput';
 
 
 
@@ -254,10 +255,7 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
           <tbody className="*:hover:bg-neutral-secondary">
             <tr className="p-2 ">
               <td className="border border-secondary p-2 ">
-                <label className="flex items-center justify-center w-full h-full ">
-                  <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                  <input type="checkbox" className="hidden" />
-                </label>
+               <CheckboxInput/>
               </td>
               <td className="border border-secondary p-2  lg:text-2xl">
                 admin

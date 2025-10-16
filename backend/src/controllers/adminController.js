@@ -1,4 +1,7 @@
-const { User, Package, Order, Transaction } = require("../models");
+const User = require("../models/User");
+const Package = require("../models/Package");
+const Order = require("../models/Order");
+const Transaction = require("../models/Transaction");
 const XLSX = require('xlsx');
 const path = require('path');
 const fs = require('fs');
@@ -7,23 +10,22 @@ exports.listUsers = async (req, res) => {
     try {
         const { q, role, status, page = 1, limit = 20 } = req.query;
         const filter = {};
-        if (role) filter.role = role.toUpperCase();
-        if (status) filter.status = status.toUpperCase();
-        
-        // For search functionality, we'll need to implement it in the model
-        const users = await User.findAll(filter);
-        
-        // Simple pagination (in production, implement proper pagination in Prisma)
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + parseInt(limit);
-        const paginatedUsers = users.slice(startIndex, endIndex);
-        
-        res.json({ 
-            users: paginatedUsers, 
-            page: +page, 
-            limit: +limit, 
-            total: users.length 
-        });
+        if (role) filter.role = role;
+        if (status) filter.status = status;
+        if (q) filter.$or = [
+            { name: new RegExp(q, 'i') },
+            { username: new RegExp(q, 'i') },
+            { email: new RegExp(q, 'i') },
+            { phone: new RegExp(q, 'i') },
+        ];
+
+        const users = await User.find(filter)
+            .select('name username email phone role status createdAt')
+            .skip((+page - 1) * +limit)
+            .limit(+limit)
+            .sort({ createdAt: -1 });
+        const total = await User.countDocuments(filter);
+        res.json({ users, page: +page, limit: +limit, total });
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });
     }
@@ -33,9 +35,9 @@ exports.updateUserRole = async (req, res) => {
     try {
         const { userId } = req.params;
         const { role } = req.body;
-        const allowed = ["USER", "ADMIN", "SUPER_ADMIN"];
-        if (!allowed.includes(role.toUpperCase())) return res.status(400).json({ message: "Invalid role" });
-        const user = await User.update(userId, { role: role.toUpperCase() });
+        const allowed = ["user", "admin", "superAdmin"];
+        if (!allowed.includes(role)) return res.status(400).json({ message: "Invalid role" });
+        const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json({ message: "Role updated", user });
     } catch (err) {
@@ -47,9 +49,9 @@ exports.updateUserStatus = async (req, res) => {
     try {
         const { userId } = req.params;
         const { status } = req.body; // active, inactive, banned
-        const allowed = ["ACTIVE", "INACTIVE", "BANNED"];
-        if (!allowed.includes(status.toUpperCase())) return res.status(400).json({ message: "Invalid status" });
-        const user = await User.update(userId, { status: status.toUpperCase() });
+        const allowed = ["active", "inactive", "banned"];
+        if (!allowed.includes(status)) return res.status(400).json({ message: "Invalid status" });
+        const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json({ message: "Status updated", user });
     } catch (err) {
@@ -61,20 +63,14 @@ exports.listTransactions = async (req, res) => {
     try {
         const { status, page = 1, limit = 20 } = req.query;
         const filter = {};
-        if (status) filter.status = status.toUpperCase();
-        const items = await Transaction.findAll(filter);
-        
-        // Simple pagination
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + parseInt(limit);
-        const paginatedTransactions = items.slice(startIndex, endIndex);
-        
-        res.json({ 
-            transactions: paginatedTransactions, 
-            page: +page, 
-            limit: +limit, 
-            total: items.length 
-        });
+        if (status) filter.status = status;
+        const items = await Transaction.find(filter)
+            .populate({ path: 'order', populate: [{ path: 'user' }, { path: 'package' }] })
+            .skip((+page - 1) * +limit)
+            .limit(+limit)
+            .sort({ createdAt: -1 });
+        const total = await Transaction.countDocuments(filter);
+        res.json({ transactions: items, page: +page, limit: +limit, total });
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });
     }
@@ -82,24 +78,17 @@ exports.listTransactions = async (req, res) => {
 
 exports.dashboardStats = async (req, res) => {
     try {
-        const { prisma } = require('../models');
-        
-        const [usersCount, packagesCount, paidOrdersCount, totalSales] = await Promise.all([
-            prisma.user.count(),
-            prisma.package.count({ where: { status: 'ACTIVE' } }),
-            prisma.order.count({ where: { status: 'PAID' } }),
-            prisma.transaction.aggregate({
-                where: { status: 'SUCCESS' },
-                _sum: { amount: true }
-            })
+        const [usersCount, packagesCount, paidOrdersCount, totalSalesAgg] = await Promise.all([
+            User.countDocuments({}),
+            Package.countDocuments({ status: 'active' }),
+            Order.countDocuments({ status: 'paid' }),
+            Transaction.aggregate([
+                { $match: { status: 'success' } },
+                { $group: { _id: null, total: { $sum: "$amount" } } }
+            ])
         ]);
-        
-        res.json({ 
-            usersCount, 
-            packagesCount, 
-            paidOrdersCount, 
-            totalSales: totalSales._sum.amount || 0 
-        });
+        const totalSales = totalSalesAgg[0]?.total || 0;
+        res.json({ usersCount, packagesCount, paidOrdersCount, totalSales });
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });
     }

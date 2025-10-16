@@ -140,15 +140,7 @@ function Sidebar() {
                 to={"/dashboard/reports?status=active"}
                                className={`block  p-3  !text-xl border-r-6 ${isActiveLink("active") ? "border-r-{rgba(29, 164, 80, 0.44)} bg-neutral-primary text-secondary" : "border-r-neutral-tertiary text-gray-black"}`}
               >
-                فعال
-              </NavLink>{" "}
-            </li>
-            <li className="w-full text-right">
-              <NavLink
-                to={"/dashboard/reports?status=inactive"}
-                               className={`block  p-3  !text-xl border-r-6 ${isActiveLink("inactive") ? "border-r-{rgba(29, 164, 80, 0.44)} bg-neutral-primary text-secondary" : "border-r-neutral-tertiary text-gray-black"}`}
-              >
-                غیر فعال
+                موفق
               </NavLink>{" "}
             </li>
             <li className="w-full text-right">
@@ -156,7 +148,15 @@ function Sidebar() {
                 to={"/dashboard/reports?status=blocked"}
                                className={`block  p-3  !text-xl border-r-6 ${isActiveLink("blocked") ? "border-r-{rgba(29, 164, 80, 0.44)} bg-neutral-primary text-secondary" : "border-r-neutral-tertiary text-gray-black"}`}
               >
-                مسدود شده
+                ناموفق
+              </NavLink>{" "}
+            </li>
+            <li className="w-full text-right">
+              <NavLink
+                to={"/dashboard/reports?status=inactive"}
+                               className={`block  p-3  !text-xl border-r-6 ${isActiveLink("inactive") ? "border-r-{rgba(29, 164, 80, 0.44)} bg-neutral-primary text-secondary" : "border-r-neutral-tertiary text-gray-black"}`}
+              >
+                در انتظار ارسال
               </NavLink>{" "}
             </li>
           </ul>

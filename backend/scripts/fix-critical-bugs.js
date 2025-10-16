@@ -41,23 +41,22 @@ const getSessionSecret = () => {
     return secret;
 };
 
-// 4. Fix MySQL Connection with Retry
-const connectDBWithRetry = async () => {
+// 4. Fix MongoDB Connection with Retry
+const connectDBWithRetry = async (mongoose) => {
     const maxRetries = 5;
     let retries = 0;
     
     while (retries < maxRetries) {
         try {
-            const { prisma } = require('../src/models');
-            await prisma.$connect();
-            console.log('✅ Connected to MySQL via Prisma');
+            await mongoose.connect(process.env.MONGODB_URI);
+            console.log('✅ Connected to MongoDB');
             return;
         } catch (error) {
             retries++;
-            console.error(`❌ MySQL connection failed (attempt ${retries}/${maxRetries}):`, error.message);
+            console.error(`❌ MongoDB connection failed (attempt ${retries}/${maxRetries}):`, error.message);
             
             if (retries === maxRetries) {
-                console.error('❌ Failed to connect to MySQL after all retries');
+                console.error('❌ Failed to connect to MongoDB after all retries');
                 process.exit(1);
             }
             

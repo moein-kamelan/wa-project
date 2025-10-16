@@ -1,4 +1,4 @@
-const { Package } = require("../models");
+const Package = require("../models/Package");
 
 exports.createPackage = async (req, res) => {
     try {
@@ -15,8 +15,8 @@ exports.getPackages = async (req, res) => {
         const { category, status } = req.query;
         const filter = {};
         if (category) filter.category = category;
-        if (status) filter.status = status.toUpperCase();
-        const items = await Package.findAll(filter);
+        if (status) filter.status = status;
+        const items = await Package.find(filter).sort({ createdAt: -1 });
         res.json({ packages: items });
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });
@@ -36,7 +36,7 @@ exports.getPackageById = async (req, res) => {
 exports.updatePackage = async (req, res) => {
     try {
         const updates = req.body;
-        const item = await Package.update(req.params.id, updates);
+        const item = await Package.findByIdAndUpdate(req.params.id, updates, { new: true });
         if (!item) return res.status(404).json({ message: "Package not found" });
         res.json({ message: "Package updated", package: item });
     } catch (err) {
@@ -46,7 +46,7 @@ exports.updatePackage = async (req, res) => {
 
 exports.deletePackage = async (req, res) => {
     try {
-        const item = await Package.delete(req.params.id);
+        const item = await Package.findByIdAndDelete(req.params.id);
         if (!item) return res.status(404).json({ message: "Package not found" });
         res.json({ message: "Package deleted" });
     } catch (err) {
