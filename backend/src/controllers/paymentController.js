@@ -1,15 +1,13 @@
-const Order = require("../models/Order");
-const Transaction = require("../models/Transaction");
-const User = require("../models/User");
+const { Order, Transaction, User } = require("../models");
 const { zarinpalRequest, zarinpalVerify } = require('../services/paymentService');
 
 // Zarinpal payment initiation
 exports.startPayment = async (req, res) => {
     try {
         const { orderId } = req.body;
-        const order = await Order.findById(orderId).populate('package');
-        if (!order || order.user.toString() !== req.user._id.toString()) return res.status(404).json({ message: "Order not found" });
-        if (order.status !== 'pending') return res.status(400).json({ message: "Order is not pending" });
+        const order = await Order.findById(orderId);
+        if (!order || order.userId !== req.user.id) return res.status(404).json({ message: "Order not found" });
+        if (order.status !== 'PENDING') return res.status(400).json({ message: "Order is not pending" });
 
         const amount = order.package.price;
         const description = `پرداخت پکیج ${order.package.title}`;
@@ -20,15 +18,15 @@ exports.startPayment = async (req, res) => {
             amount,
             description,
             callbackUrl,
-            metadata: { orderId: order._id.toString(), userId: req.user._id.toString() }
+            metadata: { orderId: order.id.toString(), userId: req.user.id.toString() }
         });
 
         if (response.data && response.data.code === 100) {
             await Transaction.create({
-                order: order._id,
+                orderId: order.id,
                 amount: amount,
-                status: 'pending',
-                gateway: 'zarinpal',
+                status: 'PENDING',
+                gateway: 'ZARINPAL',
                 authority: response.data.authority,
                 gatewayData: { requestResponse: response }
             });
@@ -57,55 +55,56 @@ exports.paymentCallback = async (req, res) => {
         }
 
         // Find transaction by authority
-        const transaction = await Transaction.findOne({ authority: Authority }).populate({
-            path: 'order',
-            populate: [{ path: 'user' }, { path: 'package' }]
-        });
-
-        if (!transaction) {
+        const transaction = await Transaction.findAll({ authority: Authority });
+        if (transaction.length === 0) {
             return res.status(404).json({ message: "Transaction not found" });
         }
+        const transactionData = transaction[0];
 
-        const order = transaction.order;
+        const order = transactionData.order;
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
 
         const verifyResponse = await zarinpalVerify({
             merchantId: process.env.ZARINPAL_MERCHANT_ID,
-            amount: transaction.amount,
+            amount: transactionData.amount,
             authority: Authority
         });
 
         if (verifyResponse.data && verifyResponse.data.code === 100) {
-            transaction.status = 'success';
-            transaction.refId = verifyResponse.data.ref_id;
-            transaction.gatewayData.verifyResponse = verifyResponse;
-            await transaction.save();
+            await Transaction.update(transactionData.id, {
+                status: 'SUCCESS',
+                refId: verifyResponse.data.ref_id,
+                gatewayData: { ...transactionData.gatewayData, verifyResponse }
+            });
 
-            order.status = 'paid';
-            await order.save();
+            await Order.update(order.id, { status: 'PAID' });
 
-            await User.findByIdAndUpdate(
-                order.user,
-                { 
-                    $addToSet: { purchasedPackages: order.package._id },
-                    $set: {
-                        'subscription.isActive': true,
-                        'subscription.expiresAt': new Date(Date.now() + order.package.duration * 24 * 60 * 60 * 1000)
-                    }
-                }
-            );
+            // Update user subscription
+            const user = await User.findById(order.userId);
+            if (user) {
+                const newExpiryDate = new Date(Date.now() + order.package.duration * 24 * 60 * 60 * 1000);
+                await User.update(user.id, {
+                    subscriptionActive: true,
+                    subscriptionExpiresAt: newExpiryDate
+                });
+            }
 
             return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment-success?refId=${verifyResponse.data.ref_id}`);
         }
 
         transaction.status = 'failure';
-        transaction.gatewayData.verifyResponse = verifyResponse;
-        await transaction.save();
+        await Transaction.update(transaction.id, {
+            gatewayData: {
+                ...transaction.gatewayData,
+                verifyResponse: verifyResponse
+            }
+        });
 
-        order.status = 'cancelled';
-        await order.save();
+        await Order.update(order.id, {
+            status: 'CANCELLED'
+        });
 
         return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment-failed?error=${verifyResponse.errors?.message || 'Payment failed'}`);
 
@@ -118,23 +117,29 @@ exports.paymentCallback = async (req, res) => {
 exports.confirmPayment = async (req, res) => {
     try {
         const { orderId, success } = req.body; // success: true/false
-        const order = await Order.findById(orderId).populate('package');
-        if (!order || order.user.toString() !== req.user._id.toString()) return res.status(404).json({ message: "Order not found" });
+        const order = await Order.findById(orderId);
+        if (!order || order.userId !== req.user.id) return res.status(404).json({ message: "Order not found" });
 
-        const status = success ? 'success' : 'failure';
-        await Transaction.create({ order: order._id, amount: order.package.price, status, gateway: 'mock' });
+        const status = success ? 'SUCCESS' : 'FAILURE';
+        await Transaction.create({ orderId: order.id, amount: order.amount, status, gateway: 'mock' });
 
         if (success) {
-            order.status = 'paid';
-            await order.save();
+            await Order.update(order.id, {
+                status: 'PAID'
+            });
 
             // Add package to user's purchasedPackages
-            await User.findByIdAndUpdate(order.user, { $addToSet: { purchasedPackages: order.package._id } });
-            return res.json({ message: "Payment successful", orderId: order._id });
+            await User.update(order.userId, {
+                purchasedPackages: {
+                    connect: { id: order.packageId }
+                }
+            });
+            return res.json({ message: "Payment successful", orderId: order.id });
         } else {
-            order.status = 'cancelled';
-            await order.save();
-            return res.status(400).json({ message: "Payment failed", orderId: order._id });
+            await Order.update(order.id, {
+                status: 'CANCELLED'
+            });
+            return res.status(400).json({ message: "Payment failed", orderId: order.id });
         }
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });

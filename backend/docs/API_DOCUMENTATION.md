@@ -5,59 +5,79 @@
 http://localhost:3000
 ```
 
+## Database Migration Notice
+**⚠️ Important**: This API has been migrated from MongoDB to MySQL with Prisma ORM. 
+
+### Key Changes:
+- **Database**: MongoDB → MySQL
+- **ORM**: Mongoose → Prisma
+- **ID Format**: `_id` (ObjectId) → `id` (Integer)
+- **Response Structure**: Updated to reflect MySQL schema
+
+### Migration Benefits:
+- ✅ Better performance with relational queries
+- ✅ ACID compliance for transactions
+- ✅ Strong data consistency
+- ✅ Better scalability
+- ✅ Advanced querying capabilities
+
+## Environment Variables
+
+### Required Variables
+```env
+# Database Configuration (MySQL with Prisma)
+DATABASE_URL="mysql://username:password@localhost:3306/whatsapp_campaign_db"
+
+# JWT Configuration
+JWT_SECRET="your-super-secret-jwt-key-here"
+
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Session Configuration
+SESSION_SECRET="your-session-secret-key"
+
+# WhatsApp Configuration
+WHATSAPP_SESSION_PATH="./sessions"
+
+# Email Configuration (for OTP)
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_USER="your-email@gmail.com"
+EMAIL_PASS="your-app-password"
+
+# SMS Configuration (for OTP)
+SMS_API_KEY="your-sms-api-key"
+
+# Payment Gateway Configuration
+ZARINPAL_MERCHANT_ID="your-zarinpal-merchant-id"
+```
+
+### Database Setup
+1. **Install MySQL** on your system
+2. **Create Database**:
+   ```sql
+   CREATE DATABASE whatsapp_campaign_db;
+   ```
+3. **Run Migrations**:
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
+
 ## Authentication Methods
 
-<<<<<<< HEAD
-### JWT Token-Based Authentication
-Most APIs use JWT tokens for authentication:
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Token Endpoints:**
-- Login: `POST /api/auth/login`
-- Register: `POST /api/auth/register`
-- Refresh Token: `POST /api/auth/refresh`
-- Logout: `POST /api/auth/logout`
-
-**Session-Based Authentication (New):**
-The system now supports automatic token extraction from session cookies:
-
-**How it works:**
-1. User logs in via `POST /api/auth/login`
-=======
 ### 🔐 Session-Based Authentication (Primary - Recommended)
 The system now uses **session-based authentication** as the primary method:
 
 **How it works:**
 1. User logs in via `POST /api/user/login`
->>>>>>> 7b5cd487057b4bfae44be4242df2cc2e89880df7
 2. JWT token is automatically stored in session cookie
 3. Frontend can make requests without manually adding Authorization header
 4. Middleware automatically extracts token from session
 
 **Benefits:**
-<<<<<<< HEAD
-- No need to manually manage Authorization headers
-- Automatic token storage in session
-- Seamless frontend integration
-- Fallback to manual Authorization header if needed
-
-**Frontend Implementation Example:**
-```javascript
-// Login request (token automatically stored in session)
-const loginResponse = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-    credentials: 'include' // Important: include cookies
-});
-
-// Subsequent requests (no Authorization header needed)
-const campaignsResponse = await fetch('/api/campaigns', {
-    credentials: 'include' // Session cookie automatically sent
-});
-
-=======
 - ✅ **No Authorization header needed** - Frontend doesn't need to manage tokens manually
 - ✅ **Automatic token storage** - JWT stored securely in session cookie
 - ✅ **Seamless frontend integration** - Just use `credentials: 'include'`
@@ -107,15 +127,12 @@ const response = await fetch('/api/campaigns', {
 });
 ```
 
->>>>>>> 7b5cd487057b4bfae44be4242df2cc2e89880df7
 // Still works with manual Authorization header
 const manualResponse = await fetch('/api/campaigns', {
     headers: { 'Authorization': `Bearer ${token}` }
 });
 ```
 
-<<<<<<< HEAD
-=======
 ## 🔧 Recent Updates
 
 ### Session Authentication Fix (December 2024)
@@ -134,7 +151,6 @@ const manualResponse = await fetch('/api/campaigns', {
 - 📱 **Seamless frontend integration** - Just use `credentials: 'include'`
 ```
 
->>>>>>> 7b5cd487057b4bfae44be4242df2cc2e89880df7
 ### Session-Based Authentication
 Some endpoints use session-based authentication:
 
@@ -265,7 +281,7 @@ Logout from all devices (requires authentication).
 
 ## 👤 User Endpoints
 
-### Register User
+### Register User (with OTP)
 **POST** `/api/user/register`
 
 Register a new user with OTP verification.
@@ -274,6 +290,7 @@ Register a new user with OTP verification.
 ```json
 {
   "name": "علی احمدی",
+  "username": "ali_ahmadi",
   "email": "ali@example.com",
   "phone": "09120000000",
   "password": "Passw0rd123!",
@@ -286,12 +303,45 @@ Register a new user with OTP verification.
 {
   "message": "User registered successfully",
   "user": {
-    "id": "507f1f77bcf86cd799439011",
+    "id": 1,
     "name": "علی احمدی",
+    "username": "ali_ahmadi",
     "email": "ali@example.com"
   }
 }
 ```
+
+### Register User (Simple - No OTP)
+**POST** `/api/user/register-simple`
+
+Register a new user without OTP verification (simplified registration).
+
+**Request Body:**
+```json
+{
+  "name": "علی احمدی",
+  "username": "ali_ahmadi",
+  "email": "ali@example.com",
+  "phone": "09120000000",
+  "password": "Passw0rd123!"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "User registered successfully (without OTP)",
+  "user": {
+    "id": 1,
+    "name": "علی احمدی",
+    "username": "ali_ahmadi",
+    "email": "ali@example.com",
+    "phone": "09120000000"
+  }
+}
+```
+
+**Note:** Phone number is optional in simple registration.
 
 ### Login User
 **POST** `/api/user/login`
@@ -314,6 +364,7 @@ Authenticate user and get JWT token.
   "user": {
     "id": "507f1f77bcf86cd799439011",
     "name": "علی احمدی",
+    "username": "ali_ahmadi",
     "email": "ali@example.com",
     "profile": {
       "age": null,
@@ -421,7 +472,7 @@ Get list of available packages (Public).
 {
   "packages": [
     {
-      "_id": "507f1f77bcf86cd799439011",
+      "id": 1,
       "title": "پکیج طلایی",
       "description": "دسترسی کامل به تمام امکانات",
       "price": 490000,
@@ -576,10 +627,10 @@ Get current user's orders.
 {
   "orders": [
     {
-      "_id": "507f1f77bcf86cd799439011",
+      "id": 1,
       "user": "507f1f77bcf86cd799439012",
       "package": {
-        "_id": "507f1f77bcf86cd799439013",
+        "id": 3,
         "title": "پکیج طلایی",
         "price": 490000
       },
@@ -674,8 +725,9 @@ Get list of users (Admin only).
 {
   "users": [
     {
-      "_id": "507f1f77bcf86cd799439011",
+      "id": 1,
       "name": "علی احمدی",
+      "username": "ali_ahmadi",
       "email": "ali@example.com",
       "phone": "09120000000",
       "role": "user",
@@ -758,15 +810,15 @@ Get list of transactions (Admin only).
 {
   "transactions": [
     {
-      "_id": "507f1f77bcf86cd799439011",
+      "id": 1,
       "order": {
-        "_id": "507f1f77bcf86cd799439012",
+        "id": 2,
         "user": {
-          "_id": "507f1f77bcf86cd799439013",
+          "id": 3,
           "name": "علی احمدی"
         },
         "package": {
-          "_id": "507f1f77bcf86cd799439014",
+          "id": 4,
           "title": "پکیج طلایی"
         }
       },
@@ -899,13 +951,14 @@ The campaign creation follows an 8-step wizard:
 ### Create Campaign
 **POST** `/api/campaigns`
 
-Create a new WhatsApp campaign with automatic title generation.
+Create a new WhatsApp campaign with custom title.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
 
 **Request Body:**
 ```json
 {
+  "title": "کمپین فروش ویژه",
   "message": "سلام! پیشنهاد ویژه برای شما..."
 }
 ```
@@ -916,14 +969,13 @@ Create a new WhatsApp campaign with automatic title generation.
   "message": "Campaign created successfully",
   "campaign": {
     "id": "507f1f77bcf86cd799439011",
-    "title": "14040303",
-    "humanReadableTitle": "کمپین ۳ خرداد ۱۴۰۴",
+    "title": "کمپین فروش ویژه",
     "status": "draft"
   }
 }
 ```
 
-**Note:** The `title` field is automatically generated based on the Persian date of creation (format: YYYYMMDD). The `humanReadableTitle` provides a Persian-readable version of the date.
+**Note:** Both `title` and `message` fields are required. The title can be any custom name chosen by the user.
 
 ### Get Campaign Step Status
 **GET** `/api/campaigns/:campaignId/steps`
@@ -1518,24 +1570,30 @@ Start sending messages.
 }
 ```
 
-### Get Campaign Progress
-**GET** `/api/campaigns/:campaignId/progress`
+### Get Campaign Details (with Progress)
+**GET** `/api/campaigns/:campaignId?include=progress`
 
-Get real-time campaign progress.
+Get campaign details with real-time progress.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
+
+**Query Parameters:**
+- `include=progress` - Include progress statistics
 
 **Response:**
 ```json
 {
   "campaign": {
-    "id": "507f1f77bcf86cd799439011",
-    "status": "running",
+    "id": 1,
+    "title": "کمپین فروش ویژه",
+    "status": "RUNNING",
     "progress": {
       "total": 150,
       "sent": 45,
       "failed": 2,
-      "delivered": 43
+      "delivered": 43,
+      "remaining": 100,
+      "deliveryRate": 30
     },
     "startedAt": "2024-01-01T12:00:00.000Z"
   }
@@ -1562,9 +1620,8 @@ Get list of user's campaigns with filtering options.
 {
   "campaigns": [
     {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "14040303",
-      "humanReadableTitle": "کمپین ۳ خرداد ۱۴۰۴",
+      "id": 1,
+      "title": "کمپین فروش ویژه",
       "status": "completed",
       "progress": {
         "total": 150,
@@ -1615,9 +1672,8 @@ Advanced search for campaigns with multiple filters and sorting options.
 {
   "campaigns": [
     {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "14040303",
-      "humanReadableTitle": "کمپین ۳ خرداد ۱۴۰۴",
+      "id": 1,
+      "title": "کمپین فروش ویژه",
       "status": "completed",
       "progress": {
         "total": 150,
@@ -1648,35 +1704,41 @@ Advanced search for campaigns with multiple filters and sorting options.
 }
 ```
 
-### Generate Campaign Report
-**GET** `/api/campaigns/:campaignId/report`
+### Get Campaign Details (with Report)
+**GET** `/api/campaigns/:campaignId?include=report`
 
-Generate campaign report (JSON format).
+Get campaign details with comprehensive report data.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
+
+**Query Parameters:**
+- `include=report` - Include detailed report data
 
 **Response:**
 ```json
 {
-  "message": "Report generated successfully",
-  "report": {
-    "campaignId": "507f1f77bcf86cd799439011",
-    "status": "running",
-    "totalMessages": 150,
-    "successfulMessages": 45,
-    "failedMessages": 2,
-    "remainingMessages": 103,
-    "deliveryRate": 30.0,
-    "startedAt": "2024-01-01T12:00:00.000Z",
-    "completedAt": null,
-    "duration": 1800000,
-    "isCompleted": false,
-    "errors": [
-      {
-        "phone": "09120000001",
-        "error": "Invalid phone number"
-      }
-    ]
+  "campaign": {
+    "id": 1,
+    "title": "کمپین فروش ویژه",
+    "status": "RUNNING",
+    "report": {
+      "totalMessages": 150,
+      "successfulMessages": 45,
+      "failedMessages": 2,
+      "deliveredMessages": 43,
+      "remainingMessages": 103,
+      "deliveryRate": 30.0,
+      "startedAt": "2024-01-01T12:00:00.000Z",
+      "completedAt": null,
+      "duration": 1800000,
+      "isCompleted": false,
+      "errors": [
+        {
+          "phone": "09120000001",
+          "error": "Invalid phone number"
+        }
+      ]
+    }
   }
 }
 ```
@@ -1684,14 +1746,72 @@ Generate campaign report (JSON format).
 ### Download Campaign Report
 **GET** `/api/campaigns/:campaignId/report/download`
 
-Download campaign report as Excel file.
+Download campaign report as Excel file with comprehensive campaign data.
 
 **Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
 
 **Response:**
 - **Content-Type**: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
-- **Content-Disposition**: `attachment; filename="campaign-report-{campaignId}.xlsx"`
-- **Body**: Excel file with two sheets:
+- **Content-Disposition**: `attachment; filename="campaign-report-{campaignId}-{date}.xlsx"`
+- **Body**: Excel file with three sheets:
+
+#### Sheet 1: Campaign Summary
+| Field | Description |
+|-------|-------------|
+| Campaign ID | Unique campaign identifier |
+| Title | Campaign title |
+| Status | Current campaign status |
+| Total Messages | Total number of recipients |
+| Sent | Successfully sent messages |
+| Failed | Failed messages |
+| Delivered | Delivered messages |
+| Remaining | Remaining messages to send |
+| Delivery Rate | Success rate percentage |
+| Started At | Campaign start time (Persian format) |
+| Completed At | Campaign completion time (Persian format) |
+| Created At | Campaign creation time (Persian format) |
+
+#### Sheet 2: Recipients Details
+| Field | Description |
+|-------|-------------|
+| Phone | Recipient phone number |
+| Name | Recipient name |
+| Status | Message status (SENT, FAILED, PENDING, DELIVERED) |
+| Sent At | Message send time (Persian format) |
+| Error | Error message if failed |
+
+#### Sheet 3: Campaign Message
+| Field | Description |
+|-------|-------------|
+| Campaign Message | The actual message content sent to recipients |
+
+**Example Usage:**
+```javascript
+// Frontend download
+const downloadReport = async (campaignId) => {
+  const response = await fetch(`/api/campaigns/${campaignId}/report/download`, {
+    method: 'GET',
+    credentials: 'include'
+  });
+  
+  if (response.ok) {
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `campaign-report-${campaignId}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+};
+```
+
+**Notes:**
+- Reports are only available for campaigns with status: `RUNNING`, `PAUSED`, or `COMPLETED`
+- File includes Persian date formatting for better readability
+- Excel file is generated in real-time with current campaign data
   - **Campaign Summary**: Overview of campaign statistics
   - **Recipients Details**: Detailed list of all recipients with status
 

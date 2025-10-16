@@ -27,7 +27,7 @@ function NewCampaign() {
   const [message, setMessage] = useState(
     getSessionStorage("campaignMessageText") || ""
   );
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(6);
   const { mutate: createCampaign } = usePostCampaign();
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [successMessage, setSuccessMessage] = useState<null | string>(null);
@@ -108,7 +108,7 @@ function NewCampaign() {
         {
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM",
             "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (event) => {
@@ -223,7 +223,7 @@ function NewCampaign() {
           {
             headers: {
               Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM",
               "Content-Type": "multipart/form-data",
             },
             onUploadProgress: (event) => {
@@ -266,7 +266,7 @@ function NewCampaign() {
         {
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM",
           },
         }
       );

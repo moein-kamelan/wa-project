@@ -25,16 +25,16 @@ function UsersManagment() {
     "editInfos" | "sendDetails" | "restrictions"
   >("editInfos");
   const [isCollapseOpen, setIsCollapseOpen] = useState(false);
-  const {data} = useUsers()
+  const { data } = useUsers();
   // const [usersData , setUsersData] = useState<any>(null)
-  
 
   // useEffect(() => {
   //   try {
   //     const fetchUsers = async() => {
   //       const response = await axiosInstance.get("api/admin/users" , {
   //         headers : {
-  //           Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw"
+  //           Authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM
+
   //         }
   //       })
   //       console.log('response:', response)
@@ -44,10 +44,9 @@ function UsersManagment() {
   //     fetchUsers()
   //   } catch (error) {
   //     console.log("error in fetching user list => " , error);
-      
+
   //   }
-    
-    
+
   // } , [])
 
   return (
@@ -469,40 +468,38 @@ function UsersManagment() {
                       </tr>
                     </thead>
                     <tbody>
-               {data?.users.map((user : any) => (
-                       <tr className="p-2 " key={user._id}>
-                        <td className="border border-secondary py-3 px-3">
-                          <label className="flex items-center justify-center w-full h-full ">
-                            <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                            <input type="checkbox" className="hidden" />
-                          </label>
-                        </td>
-                        <td className="border border-secondary py-3 px-3 lg:text-2xl">
-                          admin
-                        </td>
-                        <td className="border border-secondary py-3 px-3 lg:text-2xl">
-                          {user.name}
-                        </td>
-                        <td className="border border-secondary py-3 px-3 lg:text-2xl">
-                          {}
-                        </td>
-                        <td className="border border-secondary py-3 px-3">
-                          <button className="bg-primary rounded-[55px] text-white  shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] w-34 h-8 max-w-40 lg:h-12 text-2xl lg:text-[32px]">
-                            فعال
-                          </button>
-                        </td>
-                        <td className="border border-secondary py-3 px-3">
-                          <button
-                            className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-30 h-8 lg:w-[144px] lg:h-11"
-                            onClick={() => setIsModalOpen(true)}
-                          >
-                            مدیریت کاربر
-                          </button>
-                        </td>
-                      </tr>
-                
-               ))}
-                   
+                      {data?.users.map((user: any) => (
+                        <tr className="p-2 " key={user._id}>
+                          <td className="border border-secondary py-3 px-3">
+                            <label className="flex items-center justify-center w-full h-full ">
+                              <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
+                              <input type="checkbox" className="hidden" />
+                            </label>
+                          </td>
+                          <td className="border border-secondary py-3 px-3 lg:text-2xl">
+                            admin
+                          </td>
+                          <td className="border border-secondary py-3 px-3 lg:text-2xl">
+                            {user.name}
+                          </td>
+                          <td className="border border-secondary py-3 px-3 lg:text-2xl">
+                            {}
+                          </td>
+                          <td className="border border-secondary py-3 px-3">
+                            <button className="bg-primary rounded-[55px] text-white  shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] w-34 h-8 max-w-40 lg:h-12 text-2xl lg:text-[32px]">
+                              فعال
+                            </button>
+                          </td>
+                          <td className="border border-secondary py-3 px-3">
+                            <button
+                              className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-30 h-8 lg:w-[144px] lg:h-11"
+                              onClick={() => setIsModalOpen(true)}
+                            >
+                              مدیریت کاربر
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

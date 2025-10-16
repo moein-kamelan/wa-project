@@ -1,32 +1,36 @@
 import React from "react";
 import { axiosInstance } from "../../../../../utils/axios";
 import { useDeleteCampaign } from "../../../../../hooks/useCampaigns";
-import { errorToast, showErrorToast, showWarnToast } from "../../../../../utils/tostify";
+import {
+  errorToast,
+  showErrorToast,
+  showWarnToast,
+} from "../../../../../utils/tostify";
 
 type PopoverProps = {
   setOpenModalId: (value: string | null) => void;
   campaign: any;
   setOpenPopoverId: (value: null) => void;
-  page : number | string
+  page: number | string;
 };
 
 function Popover({
   setOpenModalId,
   campaign,
   setOpenPopoverId,
-  page
+  page,
 }: PopoverProps) {
-  const {mutate : removeCampaign} = useDeleteCampaign(page)
-  
+  const { mutate: removeCampaign } = useDeleteCampaign(page);
 
   const downloadReport = async (campainId: string) => {
     try {
       const response = await axiosInstance.get(
         `api/campaigns/${campainId}/report/download`,
         {
-          responseType : "blob" , 
+          responseType: "blob",
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM
+`,
           },
         }
       );
@@ -60,8 +64,10 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          if(campaign.status === ("draft" || "ready" || "failed")) {
-            showWarnToast("شما فقط مجاز به دانلود گزارش کمپین های در حال اجرا ، متوقف شده و تکمیل شده هستید")
+          if (campaign.status === ("draft" || "ready" || "failed")) {
+            showWarnToast(
+              "شما فقط مجاز به دانلود گزارش کمپین های در حال اجرا ، متوقف شده و تکمیل شده هستید"
+            );
           }
           downloadReport(campaign._id);
           setOpenPopoverId(null);
@@ -72,12 +78,11 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          if(campaign.status === "running") {
-            
-            showWarnToast("شما مجاز به حذف کمپین در حال اجرا نیستید ")
-            return
+          if (campaign.status === "running") {
+            showWarnToast("شما مجاز به حذف کمپین در حال اجرا نیستید ");
+            return;
           }
-          removeCampaign(campaign._id );
+          removeCampaign(campaign._id);
           setOpenPopoverId(null);
         }}
       >

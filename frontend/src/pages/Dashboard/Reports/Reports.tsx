@@ -8,7 +8,11 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { axiosInstance } from "../../../utils/axios";
 
-
+const options = [
+  { value: "متعادل", label: "فعال" },
+  { value: "strawberry", label: "غیر فعال" },
+  { value: "vanilla", label: "مسدود" },
+];
 
 function Reports() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +23,7 @@ function Reports() {
   const headerTitle = calculateTitle(searchParams.get("status"));
 
   const page = Number(searchParams.get("page")) || 1;
-  const startDate = searchParams.get("startDate") 
+  const startDate = searchParams.get("startDate");
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -38,7 +42,7 @@ function Reports() {
           },
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1OTczMzA5MCwiZXhwIjoxNzYyMzI1MDkwfQ.K7UOKvIDtJI3QhN_wdg-rl2BTAWOyeoYv3DXcqIHofw",
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA1NDc1MjcsImV4cCI6MTc2MzEzOTUyN30.XBahbtVYe1p_Uclm1IMdyu3nqNQRqCgvSaRc7h-jZeM",
           },
         });
         console.log("response:", response);
@@ -50,9 +54,7 @@ function Reports() {
       }
     };
     fetchCampaigns();
-  }, [page, searchParams, title , startDate]);
-
-
+  }, [page, searchParams, title, startDate]);
 
   function calculateTitle(status: string | null) {
     switch (status) {
@@ -102,44 +104,30 @@ function Reports() {
       setSearchParams({ page: String(page + 1) });
   };
 
-  const generateStatus = (status : string) => {
- switch (status) {
+  const generateStatus = (status: string) => {
+    switch (status) {
       case "draft":
       case "ready":
       case "paused": {
         return (
-         <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-          در انتظار ارسال
-         </span>
+          <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+            در انتظار ارسال
+          </span>
         );
       }
-      
-      case "completed": {
-        return (
-         <span className="text-primary">
-          ارسال شد
-         </span>
-        );
-      }
-      case "running":
-       {
-        return (
 
-      <span className="text-neutral-tertiary">
-          در حال ارسال
-         </span>
-        );
+      case "completed": {
+        return <span className="text-primary">ارسال شد</span>;
+      }
+      case "running": {
+        return <span className="text-neutral-tertiary">در حال ارسال</span>;
       }
 
       case "failed": {
-        return (
-       <span className="text-semantic-error ">
-          ارسال ناموفق
-         </span>
-        );
+        return <span className="text-semantic-error ">ارسال ناموفق</span>;
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen relative ">
@@ -147,8 +135,6 @@ function Reports() {
       <ReportsHeader title={headerTitle} />
       <div className="flex flex-col  bg-white mx-16 grow mb-12.5 rounded-2xl shadow-[1px_2px_5px_0px_rgba(0,0,0,0.25)] pt-4.5 px-8 gap-y-3.5">
         <div className="grow pb-4 rounded-[20px] flex flex-col">
-         
-
           <div className="flex items-center  mb-5 gap-3 flex-wrap">
             <div className="flex max-md:grow rounded-[5px] border-[1.5px] border-neutral-tertiary py-1.75 pr-2 gap-3 ">
               <svg
@@ -212,11 +198,11 @@ function Reports() {
                 const startISO = new Date(startDate).toISOString();
                 const endISO = new Date(endDate).toISOString();
 
-                setSearchParams(prev => {
-                  const params = new URLSearchParams(prev)
-                  params.set("startDate" , startISO)
-                  params.set("endDate" , endISO)
-                  return params
+                setSearchParams((prev) => {
+                  const params = new URLSearchParams(prev);
+                  params.set("startDate", startISO);
+                  params.set("endDate", endISO);
+                  return params;
                 });
               }}
               calendar={persian}
@@ -332,7 +318,227 @@ function Reports() {
             <img src="../../../../../public/images/excel.png" alt="excel" />
           </div>
           <div className="flex flex-col w-full grow">
-            <div
+            <div className=" grow  bg-neutral-tertiary/47 rounded-[20px] p-3.5">
+              <div className="flex items-center gap-4">
+                <Select
+                  options={options}
+                  placeholder="فیلتر"
+                  components={{ DropdownIndicator }}
+                  classNames={{
+                    control: () =>
+                      "!border !border-[1.5px] !border-secondary rounded-[5px] *:h-9 !cursor-pointer     shadow-sm   !outline !outline-secondary focus:shadow-0 md:w-[263px] text-xl max-w-[222px]   ",
+                    option: ({ isFocused, isSelected }) =>
+                      `px-3 py-2 cursor-pointer !text-2xl border-r-6 border-neutral-tertiary ${
+                        isSelected
+                          ? "bg-green-600 text-white !cursor-pointer "
+                          : isFocused
+                          ? "!bg-neutral-primary !text-secondary border-secondary/70 !cursor-pointer"
+                          : "bg-white !text-gray-black !cursor-pointer"
+                      }`,
+                    menu: () =>
+                      "!mt-0 border border-gray-200 font-B-Homa rounded-lg shadow-lg bg-white overflow-hidden  max-w-[263px]",
+                    placeholder: () =>
+                      "   !text-neutral-tertiary text-lg text-xl  ",
+                    singleValue: () => "!text-primary ",
+                  }}
+                />
+              </div>
+
+              <div
+                className="relative    rounded-2xl border-[3px] border-secondary   mt-3  w-full overflow-auto     [&::-webkit-scrollbar]:w-3
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:w-9/12
+  [&::-webkit-scrollbar-track]:bg-neutral-secondary
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-[#1DA45070]"
+              >
+                <table className=" w-full border-collapse text-center table-auto overflow-hidden ">
+                  <thead className="bg-neutral-primary/80 text-gray-black *:font-B-Nazanin xl:text-2xl  text-nowrap border-b-[3px] border-secondary">
+                    <tr>
+                      <th scope="col" className=" border border-secondary"></th>
+                      <th scope="col" className=" border border-secondary">
+                        <button className="flex items-center  justify-evenly  w-full p-2  ">
+                          <span>شماره مخاطب</span>
+
+                          <svg
+                            className="shrink-0"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                              fill="#075E54"
+                            />
+                            <path
+                              opacity="0.4"
+                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                              fill="#075E54"
+                            />
+                          </svg>
+                        </button>
+                      </th>
+                      <th scope="col" className="border border-secondary ">
+                        <button className="flex items-center justify-evenly w-full p-2  ">
+                          <span>تاریخ ارسال</span>
+
+                          <svg
+                            className="shrink-0"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                              fill="#075E54"
+                            />
+                            <path
+                              opacity="0.4"
+                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                              fill="#075E54"
+                            />
+                          </svg>
+                        </button>
+                      </th>
+                      <th scope="col" className="border border-secondary ">
+                        <button className="flex items-center justify-evenly w-full p-2  ">
+                          <span>وضعیت</span>
+
+                          <svg
+                            className="shrink-0"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                              fill="#075E54"
+                            />
+                            <path
+                              opacity="0.4"
+                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                              fill="#075E54"
+                            />
+                          </svg>
+                        </button>
+                      </th>
+                      <th scope="col" className=" border border-secondary">
+                        <button className="flex items-center justify-evenly w-full p-2  ">
+                          <span>عملیات</span>
+
+                          <svg
+                            className="shrink-0"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                              fill="#075E54"
+                            />
+                            <path
+                              opacity="0.4"
+                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                              fill="#075E54"
+                            />
+                          </svg>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="*:hover:bg-neutral-secondary">
+                    <tr className="p-2 ">
+                      <td className="border border-secondary p-2 ">
+                        <label className="flex items-center justify-center w-full h-full ">
+                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
+                          <input type="checkbox" className="hidden" />
+                        </label>
+                      </td>
+                      <td className="border border-secondary p-2  lg:text-2xl">
+                        admin
+                      </td>
+
+                      <td className="border border-secondary p-2  lg:text-2xl">
+                        12/6
+                      </td>
+                      <td className="border border-secondary p-2 ">
+                        <span className="text-primary text-2xl">ارسال شد</span>
+                      </td>
+                      <td className="border border-secondary p-2 ">
+                        <button
+                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          جزئیات
+                        </button>
+                      </td>
+                    </tr>
+                    <tr className="p-2 ">
+                      <td className="border border-secondary p-2 ">
+                        <label className="flex items-center justify-center w-full h-full ">
+                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
+                          <input type="checkbox" className="hidden" />
+                        </label>
+                      </td>
+                      <td className="border border-secondary p-2  lg:text-2xl">
+                        admin
+                      </td>
+
+                      <td className="border border-secondary p-2  lg:text-2xl">
+                        12/6
+                      </td>
+                      <td className="border border-secondary p-2 ">
+                        <span className="text-primary text-2xl">ارسال شد</span>
+                      </td>
+                      <td className="border border-secondary p-2 px-3">
+                        <button
+                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          جزئیات
+                        </button>
+                      </td>
+                    </tr>
+                    <tr className="p-2 ">
+                      <td className="border border-secondary p-2 px-3">
+                        <label className="flex items-center justify-center w-full h-full ">
+                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
+                          <input type="checkbox" className="hidden" />
+                        </label>
+                      </td>
+                      <td className="border border-secondary p-2 px-3 lg:text-2xl">
+                        admin
+                      </td>
+
+                      <td className="border border-secondary p-2 px-3 lg:text-2xl">
+                        12/6
+                      </td>
+                      <td className="border border-secondary p-2 px-3">
+                        <span className="text-primary text-2xl">ارسال شد</span>
+                      </td>
+                      <td className="border border-secondary p-2 px-3">
+                        <button
+                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          جزئیات
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* <div
               className="grow max-h-[562px]    overflow-y-auto overflow-x-auto [&::-webkit-scrollbar]:w-3
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:w-9/12
@@ -632,7 +838,7 @@ function Reports() {
                   </defs>
                 </svg>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -640,6 +846,22 @@ function Reports() {
   );
 }
 
-
+const DropdownIndicator = (props: any) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <svg
+        className="size-7.5"
+        viewBox="0 0 31 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M15.5002 27.0885L0.478805 0.761593L30.7893 0.916123L15.5002 27.0885Z"
+          fill="#D9D9D9"
+        />
+      </svg>
+    </components.DropdownIndicator>
+  );
+};
 
 export default Reports;
