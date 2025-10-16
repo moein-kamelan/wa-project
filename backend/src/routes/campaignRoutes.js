@@ -24,9 +24,11 @@ const {
     generateQRCode,
     checkConnection,
     startCampaign,
+    getProgress,
     getMyCampaigns,
     searchCampaigns,
     getCampaignDetails,
+    generateReport,
     downloadReport,
     pauseCampaign,
     resumeCampaign,
@@ -96,6 +98,8 @@ router.post('/:campaignId/pause', pauseCampaign);
 router.post('/:campaignId/resume', resumeCampaign);
 
 // Progress and reporting
+router.get('/:campaignId/progress', getProgress);
+router.get('/:campaignId/report', generateReport);
 router.get('/:campaignId/report/download', downloadReport);
 
 module.exports = router;

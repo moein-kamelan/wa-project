@@ -2,7 +2,8 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const path = require('path');
 const fs = require('fs');
 const xlsx = require('xlsx');
-const { Campaign, User } = require('../models');
+const Campaign = require('../models/Campaign');
+const User = require('../models/User');
 const websocketService = require('./websocketService');
 
 let io;
@@ -29,7 +30,7 @@ const whatsappService = {
     // Prepare WhatsApp sessions for campaigns
     async prepareWhatsAppSessions(campaigns, userId) {
         for (const campaign of campaigns) {
-            const campaignId = campaign.id.toString();
+            const campaignId = campaign._id.toString();
             console.log(`📱 Preparing WhatsApp session for campaign ${campaignId}`);
 
             try {
@@ -74,9 +75,9 @@ const whatsappService = {
                     }
                     
                     // Update campaign with QR code
-                    await Campaign.update(campaignId, {
-                        whatsappSessionQrCode: qr,
-                        whatsappSessionConnected: false
+                    await Campaign.findByIdAndUpdate(campaignId, {
+                        'whatsappSession.qrCode': qr,
+                        'whatsappSession.isConnected': false
                     });
 
                     // Send QR code via WebSocket
@@ -100,10 +101,10 @@ const whatsappService = {
                     };
 
                     // Update campaign status
-                    await Campaign.update(campaignId, {
-                        whatsappSessionConnected: true,
-                        whatsappSessionLastActivity: new Date(),
-                        status: 'READY'
+                    await Campaign.findByIdAndUpdate(campaignId, {
+                        'whatsappSession.isConnected': true,
+                        'whatsappSession.lastActivity': new Date(),
+                        status: 'ready'
                     });
 
                     // Send ready status via WebSocket
@@ -122,9 +123,9 @@ const whatsappService = {
                     }
                     
                     // Update campaign status
-                    await Campaign.update(campaignId, {
-                        whatsappSessionConnected: false,
-                        status: 'FAILED'
+                    await Campaign.findByIdAndUpdate(campaignId, {
+                        'whatsappSession.isConnected': false,
+                        status: 'failed'
                     });
 
                     // Send disconnected status via WebSocket
@@ -140,8 +141,8 @@ const whatsappService = {
                 console.error(`❌ Failed to initialize WhatsApp client for campaign ${campaignId}:`, error);
                 
                 // Update campaign status
-                await Campaign.update(campaignId, {
-                    status: 'FAILED'
+                await Campaign.findByIdAndUpdate(campaignId, {
+                    status: 'failed'
                 });
 
                 // Send error via WebSocket
@@ -156,12 +157,14 @@ const whatsappService = {
     // Start campaign with message sending
     async handleStartCampaign(campaignId, userId) {
         try {
-            const campaign = await Campaign.findById(campaignId);
-            
-            if (!campaign || campaign.userId !== userId) {
-                throw new Error("Campaign not found or access denied");
-            }
+            const campaign = await Campaign.findOne({ 
+                _id: campaignId, 
+                user: userId 
+            });
 
+            if (!campaign) {
+                throw new Error("Campaign not found");
+            }
 
             // Check if WhatsApp is connected
             const session = clients.get(campaignId);
@@ -170,7 +173,7 @@ const whatsappService = {
             }
 
             // Check user's message limit
-            const user = await User.findById(userId);
+            const user = await User.findById(userId).populate('purchasedPackages');
             if (!user) {
                 throw new Error("User not found");
             }
@@ -190,10 +193,9 @@ const whatsappService = {
             }
 
             // Update campaign status
-            await Campaign.update(campaignId, {
-                status: 'RUNNING',
-                startedAt: new Date()
-            });
+            campaign.status = 'running';
+            campaign.startedAt = new Date();
+            await campaign.save();
 
             // Send status update
             await websocketService.sendStatusUpdate(campaignId, 'running', 'Campaign started successfully', userId);
@@ -205,8 +207,8 @@ const whatsappService = {
             console.error('❌ Error starting campaign:', error);
             
             // Update campaign status
-            await Campaign.update(campaignId, {
-                status: 'FAILED'
+            await Campaign.findByIdAndUpdate(campaignId, {
+                status: 'failed'
             });
 
             // Send error via WebSocket
@@ -224,7 +226,7 @@ const whatsappService = {
         const intervalId = setInterval(async () => {
             if (currentIndex >= recipients.length) {
                 // Campaign completed
-                await this.handleStopCampaign(campaign.id, 'COMPLETED', userId);
+                await this.handleStopCampaign(campaign._id, 'completed', userId);
                 return;
             }
 
@@ -246,13 +248,12 @@ const whatsappService = {
                 recipient.sentAt = new Date();
                 
                 // Update campaign progress
-                await Campaign.update(campaign.id, {
-                    sentCount: campaign.sentCount + 1
-                });
+                campaign.progress.sent += 1;
+                await campaign.save();
 
                 // Update user's message count
-                await User.update(userId, {
-                    messagesSent: (user.messagesSent || 0) + 1
+                await User.findByIdAndUpdate(userId, {
+                    $inc: { messagesSent: 1 }
                 });
 
                 // Add to report
@@ -264,7 +265,7 @@ const whatsappService = {
                 });
 
                 // Send progress update via WebSocket
-                await websocketService.sendProgressUpdate(campaign.id, {
+                await websocketService.sendProgressUpdate(campaign._id, {
                     sent: currentIndex + 1,
                     total: recipients.length,
                     current: recipient.phone
@@ -278,9 +279,8 @@ const whatsappService = {
                 recipient.error = error.message;
                 
                 // Update campaign progress
-                await Campaign.update(campaign.id, {
-                    failedCount: campaign.failedCount + 1
-                });
+                campaign.progress.failed += 1;
+                await campaign.save();
 
                 // Add to report
                 report.push({
@@ -292,14 +292,14 @@ const whatsappService = {
                 });
 
                 // Send error update via WebSocket
-                await websocketService.sendErrorUpdate(campaign.id, `Failed to send to ${recipient.phone}: ${error.message}`, userId);
+                await websocketService.sendErrorUpdate(campaign._id, `Failed to send to ${recipient.phone}: ${error.message}`, userId);
             }
 
             currentIndex++;
         }, intervalMs);
 
         // Store interval for cleanup
-        campaignIntervals.set(campaign.id.toString(), { intervalId, report });
+        campaignIntervals.set(campaign._id.toString(), { intervalId, report });
     },
 
     // Stop campaign
@@ -312,7 +312,7 @@ const whatsappService = {
         }
 
         // Update campaign status
-        await Campaign.update(campaignId, {
+        const campaign = await Campaign.findByIdAndUpdate(campaignId, {
             status: finalStatus,
             completedAt: new Date()
         });
@@ -347,13 +347,8 @@ const whatsappService = {
             };
 
             // Update campaign with report
-            await Campaign.update(campaign.id, {
-                reportTotalMessages: reportData.totalMessages,
-                reportSuccessfulMessages: reportData.successfulMessages,
-                reportFailedMessages: reportData.failedMessages,
-                reportDeliveryRate: reportData.deliveryRate,
-                reportAverageDeliveryTime: reportData.averageDeliveryTime,
-                reportErrors: reportData.errors
+            await Campaign.findByIdAndUpdate(campaign._id, {
+                report: reportData
             });
 
             // Generate Excel report
@@ -361,7 +356,7 @@ const whatsappService = {
             const ws = xlsx.utils.json_to_sheet(report);
             xlsx.utils.book_append_sheet(wb, ws, "Campaign Report");
             
-            const reportPath = path.join(__dirname, '..', '..', 'uploads', `report-${campaign.id}-${Date.now()}.xlsx`);
+            const reportPath = path.join(__dirname, '..', '..', 'uploads', `report-${campaign._id}-${Date.now()}.xlsx`);
             xlsx.writeFile(wb, reportPath);
 
             console.log(`📊 Campaign report generated: ${reportPath}`);
@@ -375,13 +370,13 @@ const whatsappService = {
     async cancelUserCampaigns(userId) {
         console.log(`🛑 Cancelling all campaigns for user ID: ${userId}`);
         
-        const campaigns = await Campaign.findAll({ 
-            userId: userId, 
-            status: 'RUNNING'
+        const campaigns = await Campaign.find({ 
+            user: userId, 
+            status: 'running' 
         });
 
         for (const campaign of campaigns) {
-            await this.handleStopCampaign(campaign.id, 'CANCELLED', userId);
+            await this.handleStopCampaign(campaign._id, 'cancelled', userId);
         }
     },
 

@@ -30,8 +30,13 @@ function Campaigns() {
 
   const generateIcon = (status: string) => {
     switch (status) {
+<<<<<<< HEAD
       case "DRAFT":
       case "READY": {
+=======
+      case "draft":
+      case "ready": {
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return (
           <div className="flex items-center justify-center btn-shadow py-1 bg-neutral-tertiary rounded-[55px] w-[136px] h-10.5 text-gray-black text-xl text-center">
             در انتظار ارسال
@@ -39,14 +44,22 @@ function Campaigns() {
         );
       }
 
+<<<<<<< HEAD
       case "COMPLETED": {
+=======
+      case "completed": {
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return (
           <div className="text-white bg-primary btn-shadow py-1 rounded-[55px] text-2xl w-[136px] h-10.5 text-center">
             ارسال شد
           </div>
         );
       }
+<<<<<<< HEAD
       case "RUNNING": {
+=======
+      case "running": {
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return (
           <div
             className="flex items-center justify-center btn-shadow  border border-primary rounded-[55px] text-2xl text-white [-webkit-text-stroke:0.8px_#25d366]
@@ -57,8 +70,13 @@ function Campaigns() {
           </div>
         );
       }
+<<<<<<< HEAD
       case "PAUSED":
       case "FAILED": {
+=======
+      case "paused":
+      case "failed": {
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return (
           <div className="flex items-center justify-center btn-shadow py-1 bg-semantic-error rounded-[55px] w-[136px] h-10.5 text-white text-xl text-center ">
             ارسال ناموفق
@@ -189,7 +207,11 @@ function Campaigns() {
           >
             {data?.campaigns?.map((campaign: any) => (
               <div
+<<<<<<< HEAD
                 key={campaign.id}
+=======
+                key={campaign._id}
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
                 className="bg-white px-10.5 py-[21px] grid grid-cols-[1fr_1fr_1fr_1fr_42px] items-center justify-center rounded-tl-[6px] rounded-tr-[6px] text-2xl shadow-[2px_-4px_4px_0px_rgba(0,0,0,0.25)] hover:!shadow-[8px_0px_20px_0px_rgba(7,94,84,1)] hover:scale-101 transition duration-300"
               >
                 <div className="flex items-center gap-2">
@@ -286,7 +308,11 @@ function Campaigns() {
                   </svg>
 
                   <span>
+<<<<<<< HEAD
                     {campaign.deliverdCount}/{campaign.totalRecipients}
+=======
+                    {campaign.progress.total}/{campaign.progress.sent}
+>>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
                   </span>
                 </div>
 
