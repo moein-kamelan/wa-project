@@ -6,7 +6,7 @@ function Step6() {
   const handleClickConnect = async () => {
     try {
       const response = await axiosInstance.post(
-        "/api/campaigns/1/qr-code",
+        "/api/campaigns/2/qr-code",
         undefined,
         {
           headers: {

@@ -78,17 +78,41 @@ function useDeleteCampaign(page: any) {
       return response.data;
     },
     onSuccess: (response, campaignId) => {
-      queryClient.setQueryData(["campaigns", page], (prev: any) => {
-        console.log("prev:", prev);
-        return {
-          ...prev,
-          campaigns: prev.campaigns.filter(
-            (campaign: any) => campaign.id !== campaignId
-          ),
-        };
-      });
+      // queryClient.setQueryData(["campaigns", page], (prev: any) => {
+      //   console.log("prev:", prev);
+      //   return {
+      //     ...prev,
+      //     campaigns: prev.campaigns.filter(
+      //       (campaign: any) => campaign.id !== campaignId
+      //     ),
+      //   };
+      // });
+      queryClient.invalidateQueries({ queryKey: ["campaigns" , page] });
     },
   });
 }
 
-export { useCampaigns, usePostCampaign, useDeleteCampaign };
+function usePutCampaignTitle(page : any) {
+  const queryClient = useQueryClient();
+  return useMutation({ 
+    mutationFn: async ({ campaignId, title }: { campaignId: string; title: string }) => {
+      const response = await axiosInstance.put(
+        `/api/campaigns/${campaignId}/title`,
+        {
+          title,
+        },
+        {
+          headers: {
+             Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q
+`}
+          }
+        );
+      return response.data;
+    },
+    onSuccess: (response, campaignId, title) => {
+      queryClient.invalidateQueries({ queryKey: ["campaigns" , page] });
+    },
+   });
+  }
+
+export { useCampaigns, usePostCampaign, useDeleteCampaign , usePutCampaignTitle };

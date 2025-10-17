@@ -5,11 +5,13 @@
 ## 🔐 احراز هویت (Authentication)
 
 ### Base URL
+
 ```
 http://localhost:3000/api
 ```
 
 ### Headers مورد نیاز
+
 ```http
 Content-Type: application/json
 Authorization: Bearer <jwt-token>
@@ -18,11 +20,13 @@ Authorization: Bearer <jwt-token>
 ## 📱 API های احراز هویت
 
 ### 1. درخواست OTP
+
 ```http
 POST /api/auth/request-otp
 ```
 
 **Request Body:**
+
 ```json
 {
   "channel": "sms|email",
@@ -31,6 +35,7 @@ POST /api/auth/request-otp
 ```
 
 **Response:**
+
 ```json
 {
   "message": "OTP sent successfully",
@@ -39,11 +44,13 @@ POST /api/auth/request-otp
 ```
 
 ### 2. تایید OTP
+
 ```http
 POST /api/auth/verify-otp
 ```
 
 **Request Body:**
+
 ```json
 {
   "channel": "sms|email",
@@ -53,6 +60,7 @@ POST /api/auth/verify-otp
 ```
 
 **Response:**
+
 ```json
 {
   "message": "OTP verified successfully",
@@ -63,11 +71,13 @@ POST /api/auth/verify-otp
 ## 👤 API های کاربران
 
 ### 1. ثبت‌نام با OTP
+
 ```http
 POST /api/user/register
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "علی احمدی",
@@ -80,11 +90,13 @@ POST /api/user/register
 ```
 
 ### 2. ثبت‌نام ساده
+
 ```http
 POST /api/user/register-simple
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "علی احمدی",
@@ -96,11 +108,13 @@ POST /api/user/register-simple
 ```
 
 ### 3. ورود
+
 ```http
 POST /api/user/login
 ```
 
 **Request Body:**
+
 ```json
 {
   "email": "ali@example.com",
@@ -109,6 +123,7 @@ POST /api/user/login
 ```
 
 **Response:**
+
 ```json
 {
   "message": "User login successfully",
@@ -124,21 +139,25 @@ POST /api/user/login
 ```
 
 ### 4. دریافت پروفایل
+
 ```http
 GET /api/user/profile
 ```
 
 **Headers:**
+
 ```http
 Authorization: Bearer <jwt-token>
 ```
 
 ### 5. ویرایش پروفایل
+
 ```http
 POST /api/user/profile
 ```
 
 **Request Body:**
+
 ```json
 {
   "username": "new_username",
@@ -149,6 +168,7 @@ POST /api/user/profile
 ```
 
 ### 6. خروج
+
 ```http
 POST /api/user/logout
 ```
@@ -156,11 +176,13 @@ POST /api/user/logout
 ## 🎯 API های کمپین‌ها
 
 ### 1. ایجاد کمپین جدید
+
 ```http
 POST /api/campaigns
 ```
 
 **Request Body:**
+
 ```json
 {
   "message": "متن پیام کمپین",
@@ -169,6 +191,7 @@ POST /api/campaigns
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Campaign created successfully",
@@ -181,11 +204,13 @@ POST /api/campaigns
 ```
 
 ### 2. لیست کمپین‌های کاربر
+
 ```http
 GET /api/campaigns
 ```
 
 **Query Parameters:**
+
 - `status`: وضعیت کمپین (DRAFT, READY, RUNNING, COMPLETED, PAUSED, FAILED)
 - `title`: جستجو در عنوان
 - `startDate`: تاریخ شروع
@@ -194,14 +219,17 @@ GET /api/campaigns
 - `limit`: تعداد در هر صفحه (پیش‌فرض: 10)
 
 ### 3. جزئیات کمپین
+
 ```http
 GET /api/campaigns/:campaignId
 ```
 
 **Query Parameters:**
+
 - `include`: شامل کردن اطلاعات اضافی (progress, recipients, attachments, report)
 
 ### 4. آپلود لیست مخاطبین
+
 ```http
 POST /api/campaigns/:campaignId/recipients
 ```
@@ -209,9 +237,11 @@ POST /api/campaigns/:campaignId/recipients
 **Content-Type:** `multipart/form-data`
 
 **Form Data:**
+
 - `recipientsFile`: فایل Excel (.xlsx)
 
 **Response:**
+
 ```json
 {
   "message": "Recipients uploaded successfully",
@@ -225,6 +255,7 @@ POST /api/campaigns/:campaignId/recipients
 ```
 
 ### 5. آپلود پیوست
+
 ```http
 POST /api/campaigns/:campaignId/attachment
 ```
@@ -232,19 +263,23 @@ POST /api/campaigns/:campaignId/attachment
 **Content-Type:** `multipart/form-data`
 
 **Form Data:**
+
 - `attachment`: فایل پیوست
 
 ### 6. حذف پیوست
+
 ```http
 DELETE /api/campaigns/:campaignId/attachment
 ```
 
 ### 7. تنظیم فاصله ارسال
+
 ```http
 PUT /api/campaigns/:campaignId/interval
 ```
 
 **Request Body:**
+
 ```json
 {
   "interval": "5s|10s|20s",
@@ -255,11 +290,13 @@ PUT /api/campaigns/:campaignId/interval
 ```
 
 ### 8. تولید QR Code
+
 ```http
 POST /api/campaigns/:campaignId/qr-code
 ```
 
 **Response:**
+
 ```json
 {
   "message": "QR code generation initiated",
@@ -269,41 +306,49 @@ POST /api/campaigns/:campaignId/qr-code
 ```
 
 ### 9. بررسی وضعیت اتصال
+
 ```http
 GET /api/campaigns/:campaignId/connection
 ```
 
 ### 10. شروع کمپین
+
 ```http
 POST /api/campaigns/:campaignId/start
 ```
 
 ### 11. توقف کمپین
+
 ```http
 POST /api/campaigns/:campaignId/pause
 ```
 
 ### 12. ادامه کمپین
+
 ```http
 POST /api/campaigns/:campaignId/resume
 ```
 
 ### 13. حذف کمپین
+
 ```http
 DELETE /api/campaigns/:campaignId
 ```
 
 ### 14. پیش‌نمایش کمپین
+
 ```http
 GET /api/campaigns/:campaignId/preview
 ```
 
 ### 15. وضعیت مراحل کمپین
+
 ```http
 GET /api/campaigns/:campaignId/steps
 ```
 
 ### 16. گزارش کمپین
+
 ```http
 GET /api/campaigns/:campaignId/report/download
 ```
@@ -313,25 +358,30 @@ GET /api/campaigns/:campaignId/report/download
 ## 📦 API های پکیج‌ها
 
 ### 1. لیست پکیج‌ها
+
 ```http
 GET /api/packages
 ```
 
 **Query Parameters:**
+
 - `category`: دسته‌بندی پکیج
 - `status`: وضعیت پکیج (ACTIVE, INACTIVE)
 
 ### 2. جزئیات پکیج
+
 ```http
 GET /api/packages/:id
 ```
 
 ### 3. ایجاد پکیج (ادمین)
+
 ```http
 POST /api/packages
 ```
 
 **Request Body:**
+
 ```json
 {
   "title": "پکیج پایه",
@@ -344,11 +394,13 @@ POST /api/packages
 ```
 
 ### 4. ویرایش پکیج (ادمین)
+
 ```http
 PUT /api/packages/:id
 ```
 
 ### 5. حذف پکیج (ادمین)
+
 ```http
 DELETE /api/packages/:id
 ```
@@ -356,11 +408,13 @@ DELETE /api/packages/:id
 ## 💳 API های پرداخت
 
 ### 1. ایجاد سفارش
+
 ```http
 POST /api/orders
 ```
 
 **Request Body:**
+
 ```json
 {
   "packageId": 1
@@ -368,16 +422,19 @@ POST /api/orders
 ```
 
 ### 2. لیست سفارشات کاربر
+
 ```http
 GET /api/orders/me
 ```
 
 ### 3. شروع پرداخت
+
 ```http
 POST /api/payments/start
 ```
 
 **Request Body:**
+
 ```json
 {
   "orderId": 1
@@ -385,11 +442,13 @@ POST /api/payments/start
 ```
 
 ### 4. تایید پرداخت
+
 ```http
 POST /api/payments/verify
 ```
 
 **Request Body:**
+
 ```json
 {
   "orderId": 1,
@@ -398,6 +457,7 @@ POST /api/payments/verify
 ```
 
 ### 5. تاریخچه پرداخت‌ها
+
 ```http
 GET /api/payments/me
 ```
@@ -405,11 +465,13 @@ GET /api/payments/me
 ## 👨‍💼 API های ادمین
 
 ### 1. لیست کاربران
+
 ```http
 GET /api/admin/users
 ```
 
 **Query Parameters:**
+
 - `q`: جستجو
 - `role`: نقش کاربر
 - `status`: وضعیت کاربر
@@ -417,11 +479,13 @@ GET /api/admin/users
 - `limit`: تعداد در هر صفحه
 
 ### 2. تغییر نقش کاربر
+
 ```http
 PATCH /api/admin/users/:userId/role
 ```
 
 **Request Body:**
+
 ```json
 {
   "role": "admin|superAdmin"
@@ -429,11 +493,13 @@ PATCH /api/admin/users/:userId/role
 ```
 
 ### 3. تغییر وضعیت کاربر
+
 ```http
 PATCH /api/admin/users/:userId/status
 ```
 
 **Request Body:**
+
 ```json
 {
   "status": "active|inactive|banned"
@@ -441,16 +507,19 @@ PATCH /api/admin/users/:userId/status
 ```
 
 ### 4. لیست تراکنش‌ها
+
 ```http
 GET /api/admin/transactions
 ```
 
 ### 5. آمار داشبورد
+
 ```http
 GET /api/admin/dashboard
 ```
 
 **Response:**
+
 ```json
 {
   "usersCount": 150,
@@ -461,6 +530,7 @@ GET /api/admin/dashboard
 ```
 
 ### 6. مدیریت قالب Excel
+
 ```http
 POST /api/admin/excel-template
 GET /api/admin/excel-template/download
@@ -470,11 +540,13 @@ GET /api/admin/excel-template/info
 ## 🔄 API های تازه‌سازی توکن
 
 ### 1. تازه‌سازی توکن
+
 ```http
 POST /api/refresh/token
 ```
 
 **Request Body:**
+
 ```json
 {
   "refreshToken": "refresh-token"
@@ -482,27 +554,29 @@ POST /api/refresh/token
 ```
 
 ### 2. خروج از همه دستگاه‌ها
+
 ```http
 POST /api/refresh/logout-all
 ```
 
 ## 📊 کدهای وضعیت HTTP
 
-| کد | معنی | توضیح |
-|---|---|---|
-| 200 | OK | درخواست موفق |
-| 201 | Created | ایجاد موفق |
-| 400 | Bad Request | درخواست نامعتبر |
-| 401 | Unauthorized | عدم احراز هویت |
-| 403 | Forbidden | عدم دسترسی |
-| 404 | Not Found | یافت نشد |
-| 500 | Internal Server Error | خطای سرور |
+| کد  | معنی                  | توضیح           |
+| --- | --------------------- | --------------- |
+| 200 | OK                    | درخواست موفق    |
+| 201 | Created               | ایجاد موفق      |
+| 400 | Bad Request           | درخواست نامعتبر |
+| 401 | Unauthorized          | عدم احراز هویت  |
+| 403 | Forbidden             | عدم دسترسی      |
+| 404 | Not Found             | یافت نشد        |
+| 500 | Internal Server Error | خطای سرور       |
 
 ## 🔍 نمونه درخواست‌ها
 
 ### cURL Examples
 
 #### ورود کاربر
+
 ```bash
 curl -X POST http://localhost:3000/api/user/login \
   -H "Content-Type: application/json" \
@@ -513,6 +587,7 @@ curl -X POST http://localhost:3000/api/user/login \
 ```
 
 #### ایجاد کمپین
+
 ```bash
 curl -X POST http://localhost:3000/api/campaigns \
   -H "Content-Type: application/json" \
@@ -524,8 +599,9 @@ curl -X POST http://localhost:3000/api/campaigns \
 ```
 
 #### آپلود مخاطبین
+
 ```bash
-curl -X POST http://localhost:3000/api/campaigns/1/recipients \
+curl -X POST http://localhost:3000/api/campaigns/2/recipients \
   -H "Authorization: Bearer <jwt-token>" \
   -F "recipientsFile=@recipients.xlsx"
 ```
@@ -533,11 +609,15 @@ curl -X POST http://localhost:3000/api/campaigns/1/recipients \
 ## 🔌 WebSocket Events
 
 ### اتصال
+
 ```javascript
-const socket = new WebSocket('ws://localhost:3000/ws/campaigns?campaignId=1&userId=1');
+const socket = new WebSocket(
+  "ws://localhost:3000/ws/campaigns?campaignId=1&userId=1"
+);
 ```
 
 ### رویدادها
+
 - `campaign_update`: به‌روزرسانی وضعیت کمپین
 - `progress_update`: به‌روزرسانی پیشرفت
 - `status_update`: به‌روزرسانی وضعیت

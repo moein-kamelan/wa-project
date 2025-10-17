@@ -218,7 +218,7 @@ function NewCampaign() {
         }
 
         const response = await axiosInstance.post(
-          "/api/campaigns/1/attachment/temp",
+          "/api/campaigns/2/attachment/temp",
           formData,
           {
             headers: {

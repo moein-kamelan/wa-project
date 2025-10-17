@@ -86,7 +86,7 @@ const Step5 = forwardRef<Step5Ref, Step5Props>(({ onSubmit }, ref) => {
             };
 
             const response = await axiosInstance.put(
-              "/api/campaigns/1/interval",
+              "/api/campaigns/2/interval",
               payload,
               {
                 headers: {
