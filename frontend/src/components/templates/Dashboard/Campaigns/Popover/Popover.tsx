@@ -59,7 +59,7 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          setOpenModalId(campaign._id);
+          setOpenModalId(campaign.id);
           setOpenPopoverId(null);
         }}
       >
@@ -73,7 +73,7 @@ function Popover({
               "شما فقط مجاز به دانلود گزارش کمپین های در حال اجرا ، متوقف شده و تکمیل شده هستید"
             );
           }
-          downloadReport(campaign._id);
+          downloadReport(campaign.id);
           setOpenPopoverId(null);
         }}
       >
@@ -86,7 +86,7 @@ function Popover({
             showWarnToast("شما مجاز به حذف کمپین در حال اجرا نیستید ");
             return;
           }
-          removeCampaign(campaign._id);
+          removeCampaign(campaign.id);
           setOpenPopoverId(null);
         }}
       >

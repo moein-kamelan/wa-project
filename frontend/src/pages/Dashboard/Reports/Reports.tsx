@@ -118,13 +118,8 @@ function Reports() {
 
   const generateStatus = (status: string) => {
     switch (status) {
-<<<<<<< HEAD
       case "DRAFT":
       case "READY": {
-=======
-      case "draft":
-      case "ready": {
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return (
           <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
             در انتظار ارسال
@@ -695,10 +690,7 @@ function Reports() {
                     {campaigns?.map((campaign) => (
                       <tr key={campaign.id} className="p-2 ">
                         <td className="border border-secondary py-2.5 px-3">
-                          <label className="flex items-center justify-center w-full h-full ">
-                            <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                            <input type="checkbox" className="hidden" />
-                          </label>
+                        <CheckboxInput/>
                         </td>
                         <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
                           {campaign.title}

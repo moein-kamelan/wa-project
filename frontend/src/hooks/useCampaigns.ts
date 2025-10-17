@@ -95,7 +95,7 @@ function useDeleteCampaign(page: any) {
         return {
           ...prev,
           campaigns: prev.campaigns.filter(
-            (campaign: any) => campaign._id !== campaignId
+            (campaign: any) => campaign.id !== campaignId
           ),
         };
       });
