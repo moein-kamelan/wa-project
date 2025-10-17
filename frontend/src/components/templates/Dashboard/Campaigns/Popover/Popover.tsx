@@ -1,23 +1,19 @@
 import React from "react";
 import { axiosInstance } from "../../../../../utils/axios";
 import { useDeleteCampaign } from "../../../../../hooks/useCampaigns";
-import {
-  errorToast,
-  showErrorToast,
-  showWarnToast,
-} from "../../../../../utils/tostify";
+import { showWarnToast } from "../../../../../utils/tostify";
 
 type PopoverProps = {
-  setOpenModalId: (value: string | null) => void;
+  setOpenModal: (value: boolean) => void;
   campaign: any;
-  setOpenPopoverId: (value: null) => void;
+  setopenPopoverId: (value: string) => void;
   page: number | string;
 };
 
 function Popover({
-  setOpenModalId,
+  setOpenModal,
   campaign,
-  setOpenPopoverId,
+  setopenPopoverId,
   page,
 }: PopoverProps) {
   const { mutate: removeCampaign } = useDeleteCampaign(page);
@@ -55,8 +51,8 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          setOpenModalId(campaign.id);
-          setOpenPopoverId(null);
+          setOpenModal(true);
+          setopenPopoverId(campaign.id);
         }}
       >
         مشاهده جزئیات
@@ -64,13 +60,13 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          if (campaign.status === ("draft" || "ready" || "failed")) {
+          if (["DRAFT", "READY", "FAILED"].includes(campaign.status)) {
             showWarnToast(
               "شما فقط مجاز به دانلود گزارش کمپین های در حال اجرا ، متوقف شده و تکمیل شده هستید"
             );
           }
           downloadReport(campaign.id);
-          setOpenPopoverId(null);
+          setopenPopoverId(campaign.id);
         }}
       >
         دانلود گزارش
@@ -83,7 +79,7 @@ function Popover({
             return;
           }
           removeCampaign(campaign.id);
-          setOpenPopoverId(null);
+          setopenPopoverId(campaign.id);
         }}
       >
         حذف کمپین

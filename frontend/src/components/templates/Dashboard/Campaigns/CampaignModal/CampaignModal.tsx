@@ -5,7 +5,7 @@ import CheckboxInput from '../../../../modules/CheckboxInput/CheckboxInput';
 
 
 type CampaignModalProps = {
-    setOpenModalId : (value : null) => void
+    setOpenModal : (value : boolean) => void
 }
 
 const options = [
@@ -14,7 +14,7 @@ const options = [
   { value: "vanilla", label: "مسدود" },
 ];
 
-function CampaignModal({setOpenModalId} : CampaignModalProps) {
+function CampaignModal({setOpenModal} : CampaignModalProps) {
 
 
         const radius = 46;
@@ -23,7 +23,7 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
     
   return (
      <div className="bg-white mx-15 pt-6 pb-4 px-8  shrink-0 grow rounded-2xl shadow-[1px_4px_4px_0px_rgba(0,0,0,0.25)] -translate-y-10 relative">
-          <button className="absolute left-1 top-1 z-20" onClick={() => setOpenModalId(null)}>
+          <button className="absolute left-1 top-1 z-20" onClick={() => setOpenModal(false)}>
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path opacity="0.4" d="M32.38 4H15.62C8.34 4 4 8.34 4 15.62V32.36C4 39.66 8.34 44 15.62 44H32.36C39.64 44 43.98 39.66 43.98 32.38V15.62C44 8.34 39.66 4 32.38 4Z" fill="#075E54"/>
 <path d="M33.5459 31.4247L26.1213 24.0001L33.5459 16.5755C34.1258 15.9956 34.1258 15.034 33.5459 14.4541C32.9661 13.8743 32.0044 13.8743 31.4246 14.4541L24 21.8788L16.5754 14.4541C15.9956 13.8743 15.0339 13.8743 14.4541 14.4541C13.8742 15.034 13.8742 15.9956 14.4541 16.5755L21.8787 24.0001L14.4541 31.4247C13.8742 32.0045 13.8742 32.9662 14.4541 33.546C15.0339 34.1259 15.9956 34.1259 16.5754 33.546L24 26.1214L31.4246 33.546C32.0044 34.1259 32.9661 34.1259 33.5459 33.546C34.1258 32.9662 34.1258 32.0045 33.5459 31.4247Z" fill="#075E54"/>
@@ -298,7 +298,7 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
               <td className="border border-secondary p-2 px-3">
                 <button
                   className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setOpenModal(true)}
                 >
                   جزئیات
                 </button>
@@ -325,7 +325,7 @@ function CampaignModal({setOpenModalId} : CampaignModalProps) {
               <td className="border border-secondary p-2 px-3">
                 <button
                   className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => setOpenModal(true)}
                 >
                   جزئیات
                 </button>
