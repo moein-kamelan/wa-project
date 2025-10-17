@@ -9,7 +9,6 @@
 http://localhost:3000/api
 ```
 
-<<<<<<< HEAD
 ### Headers مورد نیاز
 ```http
 Content-Type: application/json
@@ -21,48 +20,6 @@ Authorization: Bearer <jwt-token>
 ### 1. درخواست OTP
 ```http
 POST /api/auth/request-otp
-=======
-## Authentication Methods
-
-### 🔐 Session-Based Authentication (Primary - Recommended)
-The system now uses **session-based authentication** as the primary method:
-
-**How it works:**
-1. User logs in via `POST /api/user/login`
-2. JWT token is automatically stored in session cookie
-3. Frontend can make requests without manually adding Authorization header
-4. Middleware automatically extracts token from session
-
-**Benefits:**
-- ✅ **No Authorization header needed** - Frontend doesn't need to manage tokens manually
-- ✅ **Automatic token storage** - JWT stored securely in session cookie
-- ✅ **Seamless frontend integration** - Just use `credentials: 'include'`
-- ✅ **Fallback support** - Falls back to Authorization header if needed
-- ✅ **Database resilience** - Works even if database is temporarily unavailable
-
-**Frontend Implementation:**
-```javascript
-// 1. Login (token automatically stored in session)
-const loginResponse = await fetch('/api/user/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Important: include cookies
-    body: JSON.stringify({ email, password })
-});
-
-// 2. All subsequent requests (no Authorization header needed!)
-const campaignsResponse = await fetch('/api/campaigns', {
-    method: 'GET',
-    credentials: 'include' // Session cookie automatically sent
-});
-
-const createCampaignResponse = await fetch('/api/campaigns', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Session cookie automatically sent
-    body: JSON.stringify({ message: 'Hello World' })
-});
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 ```
 
 **Request Body:**
@@ -110,59 +67,6 @@ POST /api/auth/verify-otp
 POST /api/user/register
 ```
 
-<<<<<<< HEAD
-=======
-**Response:**
-```json
-{
-  "message": "Token refreshed successfully",
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-### Logout
-**POST** `/api/refresh/logout`
-
-Logout and revoke refresh token.
-
-**Request Body:**
-```json
-{
-  "refreshToken": "uuid-refresh-token"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Logout successful"
-}
-```
-
-### Logout All Devices
-**POST** `/api/refresh/logout-all`
-
-Logout from all devices (requires authentication).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "message": "Logged out from all devices"
-}
-```
-
----
-
-## 👤 User Endpoints
-
-### Register User
-**POST** `/api/user/register`
-
-Register a new user with OTP verification.
-
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 **Request Body:**
 ```json
 {
@@ -175,7 +79,6 @@ Register a new user with OTP verification.
 }
 ```
 
-<<<<<<< HEAD
 ### 2. ثبت‌نام ساده
 ```http
 POST /api/user/register-simple
@@ -196,25 +99,6 @@ POST /api/user/register-simple
 ```http
 POST /api/user/login
 ```
-=======
-**Response:**
-```json
-{
-  "message": "User registered successfully",
-  "user": {
-    "id": "507f1f77bcf86cd799439011",
-    "name": "علی احمدی",
-    "username": "ali_ahmadi",
-    "email": "ali@example.com"
-  }
-}
-```
-
-### Login User
-**POST** `/api/user/login`
-
-Authenticate user and get JWT token.
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
 **Request Body:**
 ```json
@@ -276,520 +160,11 @@ POST /api/user/logout
 POST /api/campaigns
 ```
 
-<<<<<<< HEAD
 **Request Body:**
 ```json
 {
   "message": "متن پیام کمپین",
   "title": "عنوان کمپین"
-=======
----
-
-## 📦 Package Endpoints
-
-### Get Packages
-**GET** `/api/packages`
-
-Get list of available packages (Public).
-
-**Query Parameters:**
-- `category` (optional): Filter by category
-- `status` (optional): Filter by status (active/inactive)
-
-**Response:**
-```json
-{
-  "packages": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "پکیج طلایی",
-      "description": "دسترسی کامل به تمام امکانات",
-      "price": 490000,
-      "duration": 30,
-      "category": "services",
-      "status": "active",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
-
-### Get Package by ID
-**GET** `/api/packages/:id`
-
-Get specific package details (Public).
-
-**Response:**
-```json
-{
-  "package": {
-    "_id": "507f1f77bcf86cd799439011",
-    "title": "پکیج طلایی",
-    "description": "دسترسی کامل به تمام امکانات",
-    "price": 490000,
-    "duration": 30,
-    "category": "services",
-    "status": "active"
-  }
-}
-```
-
-### Create Package
-**POST** `/api/packages`
-
-Create new package (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "title": "پکیج طلایی",
-  "description": "دسترسی کامل به تمام امکانات",
-  "price": 490000,
-  "duration": 30,
-  "category": "services",
-  "status": "active"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Package created",
-  "package": {
-    "_id": "507f1f77bcf86cd799439011",
-    "title": "پکیج طلایی",
-    "description": "دسترسی کامل به تمام امکانات",
-    "price": 490000,
-    "duration": 30,
-    "category": "services",
-    "status": "active"
-  }
-}
-```
-
-### Update Package
-**PUT** `/api/packages/:id`
-
-Update package (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "price": 590000,
-  "status": "inactive"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Package updated",
-  "package": {
-    "_id": "507f1f77bcf86cd799439011",
-    "title": "پکیج طلایی",
-    "price": 590000,
-    "status": "inactive"
-  }
-}
-```
-
-### Delete Package
-**DELETE** `/api/packages/:id`
-
-Delete package (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "message": "Package deleted"
-}
-```
-
----
-
-## 🛒 Order Endpoints
-
-### Create Order
-**POST** `/api/orders`
-
-Create new order for a package.
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "packageId": "507f1f77bcf86cd799439011"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Order created",
-  "order": {
-    "_id": "507f1f77bcf86cd799439011",
-    "user": "507f1f77bcf86cd799439012",
-    "package": "507f1f77bcf86cd799439013",
-    "status": "pending",
-    "createdAt": "2024-01-01T00:00:00.000Z"
-  }
-}
-```
-
-### Get My Orders
-**GET** `/api/orders/me`
-
-Get current user's orders.
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "orders": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "user": "507f1f77bcf86cd799439012",
-      "package": {
-        "_id": "507f1f77bcf86cd799439013",
-        "title": "پکیج طلایی",
-        "price": 490000
-      },
-      "status": "paid",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ]
-}
-```
-
----
-
-## 💳 Payment Endpoints
-
-### Start Payment
-**POST** `/api/payments/start`
-
-Initiate payment with Zarinpal gateway.
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "orderId": "507f1f77bcf86cd799439011"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Payment initiated",
-  "paymentUrl": "https://www.zarinpal.com/pg/StartPay/A000000000000000000000000000000000000",
-  "authority": "A000000000000000000000000000000000000"
-}
-```
-
-### Confirm Payment (Mock)
-**POST** `/api/payments/confirm`
-
-Confirm payment for testing (Mock gateway).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "orderId": "507f1f77bcf86cd799439011",
-  "success": true
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Payment successful",
-  "orderId": "507f1f77bcf86cd799439011"
-}
-```
-
-### Payment Callback
-**GET** `/api/payments/callback`
-
-Zarinpal payment callback (Public).
-
-**Query Parameters:**
-- `Authority`: Payment authority code
-- `Status`: Payment status (OK/NOK)
-
-**Response:** Redirects to frontend success/failure page.
-
----
-
-## 👨‍💼 Admin Endpoints
-
-### Get Users
-**GET** `/api/admin/users`
-
-Get list of users (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Query Parameters:**
-- `q` (optional): Search query
-- `role` (optional): Filter by role (user/admin/superAdmin)
-- `status` (optional): Filter by status (active/inactive/banned)
-- `page` (optional): Page number (default: 1)
-- `limit` (optional): Items per page (default: 20)
-
-**Response:**
-```json
-{
-  "users": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "name": "علی احمدی",
-      "username": "ali_ahmadi",
-      "email": "ali@example.com",
-      "phone": "09120000000",
-      "role": "user",
-      "status": "active",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ],
-  "page": 1,
-  "limit": 20,
-  "total": 1
-}
-```
-
-### Update User Role
-**PATCH** `/api/admin/users/:userId/role`
-
-Update user role (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "role": "admin"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Role updated",
-  "user": {
-    "_id": "507f1f77bcf86cd799439011",
-    "name": "علی احمدی",
-    "role": "admin"
-  }
-}
-```
-
-### Update User Status
-**PATCH** `/api/admin/users/:userId/status`
-
-Update user status (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "status": "banned"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Status updated",
-  "user": {
-    "_id": "507f1f77bcf86cd799439011",
-    "name": "علی احمدی",
-    "status": "banned"
-  }
-}
-```
-
-### Get Transactions
-**GET** `/api/admin/transactions`
-
-Get list of transactions (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Query Parameters:**
-- `status` (optional): Filter by status (success/failure/pending)
-- `page` (optional): Page number (default: 1)
-- `limit` (optional): Items per page (default: 20)
-
-**Response:**
-```json
-{
-  "transactions": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "order": {
-        "_id": "507f1f77bcf86cd799439012",
-        "user": {
-          "_id": "507f1f77bcf86cd799439013",
-          "name": "علی احمدی"
-        },
-        "package": {
-          "_id": "507f1f77bcf86cd799439014",
-          "title": "پکیج طلایی"
-        }
-      },
-      "amount": 490000,
-      "status": "success",
-      "gateway": "zarinpal",
-      "refId": "123456789",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ],
-  "page": 1,
-  "limit": 20,
-  "total": 1
-}
-```
-
-### Get Dashboard Stats
-**GET** `/api/admin/dashboard`
-
-Get admin dashboard statistics (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "usersCount": 150,
-  "packagesCount": 5,
-  "paidOrdersCount": 89,
-  "totalSales": 43500000
-}
-```
-
-### Upload Excel Template
-**POST** `/api/admin/excel-template`
-
-Upload Excel template file for recipient data (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request:** `multipart/form-data`
-- `template`: Excel file (.xlsx) with recipient template
-
-**Response:**
-```json
-{
-  "message": "Excel template uploaded successfully",
-  "template": {
-    "filename": "recipients-template.xlsx",
-    "originalName": "template.xlsx",
-    "size": 8192,
-    "path": "/uploads/templates/recipients-template.xlsx"
-  }
-}
-```
-
-### Download Excel Template (Admin)
-**GET** `/api/admin/excel-template/download`
-
-Download the current Excel template file (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:** Excel file download (`recipients-template.xlsx`)
-
-### Get Excel Template Info
-**GET** `/api/admin/excel-template/info`
-
-Get information about the current Excel template (Admin only).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "hasTemplate": true,
-  "template": {
-    "filename": "recipients-template.xlsx",
-    "size": 8192,
-    "lastModified": "2024-01-15T10:30:00.000Z",
-    "path": "/uploads/templates/recipients-template.xlsx"
-  }
-}
-```
-
----
-
-## 📱 Campaign Endpoints
-
-### Get Subscription Info
-**GET** `/api/campaigns/subscription`
-
-Get user's subscription information and message quota.
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "subscription": {
-    "isActive": true,
-    "expiresAt": "2024-02-01T00:00:00.000Z",
-    "totalLimit": 1000,
-    "used": 150,
-    "remaining": 850,
-    "packages": [
-      {
-        "id": "507f1f77bcf86cd799439011",
-        "title": "پکیج طلایی",
-        "messageLimit": 1000
-      }
-    ]
-  }
-}
-```
-
-### Campaign Wizard Flow
-
-The campaign creation follows an 8-step wizard:
-
-1. **Step 1: تعریف کمپین و متن پیام** - Create campaign and message text
-2. **Step 2: آپلود فایل Excel مخاطبین** - Upload Excel file with recipients
-3. **Step 3: آپلود فایل ضمیمه (اختیاری)** - Upload attachment (optional)
-4. **Step 4: تنظیم فاصله ارسال** - Set sending interval and schedule
-5. **Step 5: اتصال WhatsApp** - Connect WhatsApp
-6. **Step 6: پیش‌نمایش و تایید** - Preview and confirm
-7. **Step 7: شروع ارسال** - Start sending
-8. **Step 8: گزارش نهایی** - Final report
-
-### Create Campaign
-**POST** `/api/campaigns`
-
-Create a new WhatsApp campaign with custom title.
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Request Body:**
-```json
-{
-  "title": "کمپین فروش ویژه",
-  "message": "سلام! پیشنهاد ویژه برای شما..."
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 }
 ```
 
@@ -903,7 +278,6 @@ GET /api/campaigns/:campaignId/connection
 POST /api/campaigns/:campaignId/start
 ```
 
-<<<<<<< HEAD
 ### 11. توقف کمپین
 ```http
 POST /api/campaigns/:campaignId/pause
@@ -913,12 +287,6 @@ POST /api/campaigns/:campaignId/pause
 ```http
 POST /api/campaigns/:campaignId/resume
 ```
-=======
-### Get Campaign Progress
-**GET** `/api/campaigns/:campaignId/progress`
-
-Get real-time campaign progress.
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
 ### 13. حذف کمپین
 ```http
@@ -949,7 +317,6 @@ GET /api/campaigns/:campaignId/report/download
 GET /api/packages
 ```
 
-<<<<<<< HEAD
 **Query Parameters:**
 - `category`: دسته‌بندی پکیج
 - `status`: وضعیت پکیج (ACTIVE, INACTIVE)
@@ -973,22 +340,6 @@ POST /api/packages
   "duration": 30,
   "category": "basic",
   "status": "active"
-=======
-**Response:**
-```json
-{
-  "campaign": {
-    "id": "507f1f77bcf86cd799439011",
-    "status": "running",
-    "progress": {
-      "total": 150,
-      "sent": 45,
-      "failed": 2,
-      "delivered": 43
-    },
-    "startedAt": "2024-01-01T12:00:00.000Z"
-  }
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 }
 ```
 
@@ -1102,41 +453,10 @@ GET /api/admin/dashboard
 **Response:**
 ```json
 {
-<<<<<<< HEAD
   "usersCount": 150,
   "packagesCount": 5,
   "paidOrdersCount": 75,
   "totalSales": 15000000
-=======
-  "campaigns": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "کمپین فروش ویژه",
-      "status": "completed",
-      "progress": {
-        "total": 150,
-        "sent": 148,
-        "failed": 2
-      },
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "startedAt": "2024-01-01T12:00:00.000Z",
-      "completedAt": "2024-01-01T12:30:00.000Z",
-      "message": "سلام! پیشنهاد ویژه برای شما..."
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 1,
-    "pages": 1
-  },
-  "filters": {
-    "status": null,
-    "title": null,
-    "startDate": null,
-    "endDate": null
-  }
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 }
 ```
 
@@ -1157,7 +477,6 @@ POST /api/refresh/token
 **Request Body:**
 ```json
 {
-<<<<<<< HEAD
   "refreshToken": "refresh-token"
 }
 ```
@@ -1165,78 +484,10 @@ POST /api/refresh/token
 ### 2. خروج از همه دستگاه‌ها
 ```http
 POST /api/refresh/logout-all
-=======
-  "campaigns": [
-    {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "کمپین فروش ویژه",
-      "status": "completed",
-      "progress": {
-        "total": 150,
-        "sent": 148,
-        "failed": 2
-      },
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "startedAt": "2024-01-01T12:00:00.000Z",
-      "completedAt": "2024-01-01T12:30:00.000Z",
-      "message": "سلام! پیشنهاد ویژه برای شما..."
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 1,
-    "pages": 1
-  },
-  "filters": {
-    "query": "فروش",
-    "status": "completed",
-    "title": null,
-    "startDate": "2024-01-01T00:00:00.000Z",
-    "endDate": "2024-01-31T23:59:59.999Z",
-    "sortBy": "createdAt",
-    "sortOrder": "desc"
-  }
-}
-```
-
-### Generate Campaign Report
-**GET** `/api/campaigns/:campaignId/report`
-
-Generate campaign report (JSON format).
-
-**Headers:** `Authorization: Bearer YOUR_JWT_TOKEN`
-
-**Response:**
-```json
-{
-  "message": "Report generated successfully",
-  "report": {
-    "campaignId": "507f1f77bcf86cd799439011",
-    "status": "running",
-    "totalMessages": 150,
-    "successfulMessages": 45,
-    "failedMessages": 2,
-    "remainingMessages": 103,
-    "deliveryRate": 30.0,
-    "startedAt": "2024-01-01T12:00:00.000Z",
-    "completedAt": null,
-    "duration": 1800000,
-    "isCompleted": false,
-    "errors": [
-      {
-        "phone": "09120000001",
-        "error": "Invalid phone number"
-      }
-    ]
-  }
-}
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 ```
 
 ## 📊 کدهای وضعیت HTTP
 
-<<<<<<< HEAD
 | کد | معنی | توضیح |
 |---|---|---|
 | 200 | OK | درخواست موفق |
@@ -1246,13 +497,9 @@ Generate campaign report (JSON format).
 | 403 | Forbidden | عدم دسترسی |
 | 404 | Not Found | یافت نشد |
 | 500 | Internal Server Error | خطای سرور |
-=======
-Download campaign report as Excel file.
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
 ## 🔍 نمونه درخواست‌ها
 
-<<<<<<< HEAD
 ### cURL Examples
 
 #### ورود کاربر
@@ -1297,14 +544,6 @@ const socket = new WebSocket('ws://localhost:3000/ws/campaigns?campaignId=1&user
 - `error_update`: به‌روزرسانی خطا
 - `qr_code`: دریافت QR Code
 - `completion_update`: تکمیل کمپین
-=======
-**Response:**
-- **Content-Type**: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
-- **Content-Disposition**: `attachment; filename="campaign-report-{campaignId}.xlsx"`
-- **Body**: Excel file with two sheets:
-  - **Campaign Summary**: Overview of campaign statistics
-  - **Recipients Details**: Detailed list of all recipients with status
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
 
 ## 📝 نکات مهم
 

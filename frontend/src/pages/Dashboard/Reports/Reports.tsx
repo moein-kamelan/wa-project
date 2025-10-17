@@ -43,11 +43,7 @@ function Reports() {
           },
           headers: {
             Authorization:
-<<<<<<< HEAD
               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NjA2MTM3NzUsImV4cCI6MTc2MzIwNTc3NX0.CPnR2tSNUBYlQtl5ht--UU6Pq-6pvw3y8yr0SR7Js2Q",
-=======
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDU2MDYxNmFlMjU1MTNlN2MzNDIxNyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2MDYwMjU3MiwiZXhwIjoxNzYzMTk0NTcyfQ.cUOYmwNszystjjRaAek5Ef9024y99EbsFAxt72gyEww",
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
           },
         });
         console.log("response:", response);
@@ -90,17 +86,10 @@ function Reports() {
         return ["RUNNING", "COMPLETED"];
       }
       case "inactive": {
-<<<<<<< HEAD
         return ["DRAFT", "READY"];
       }
       case "blocked": {
         return ["FAILED", "PAUSED"];
-=======
-        return ["draft", "ready"];
-      }
-      case "blocked": {
-        return ["failed" , "paused"];
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
       }
       default: {
         return ["DRAFT", "READY", "RUNNING", "COMPLETED", "PAUSED", "FAILED"];
@@ -133,13 +122,8 @@ function Reports() {
       case "RUNNING": {
         return <span className="text-neutral-tertiary">در حال ارسال</span>;
       }
-<<<<<<< HEAD
       case "PAUSED":
       case "FAILED": {
-=======
-      case "paused":
-      case "failed": {
->>>>>>> e7119f72d8fdb45b9bd98b02d8dbe2a7adfdc346
         return <span className="text-semantic-error ">ارسال ناموفق</span>;
       }
     }

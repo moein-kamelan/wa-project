@@ -24,11 +24,9 @@ const {
     generateQRCode,
     checkConnection,
     startCampaign,
-    getProgress,
     getMyCampaigns,
     searchCampaigns,
     getCampaignDetails,
-    generateReport,
     downloadReport,
     pauseCampaign,
     resumeCampaign,
@@ -36,7 +34,8 @@ const {
     setCampaignInterval,
     getScheduledCampaigns,
     cancelScheduledCampaign,
-    forceCleanupSession
+    forceCleanupSession,
+    updateCampaignTitle
 } = require('../controllers/campaignController');
 const { downloadExcelTemplate } = require('../controllers/adminController');
 
@@ -60,6 +59,7 @@ router.delete('/:campaignId', deleteCampaign);
 
 // Campaign settings
 router.put('/:campaignId/interval', setCampaignInterval);
+router.put('/:campaignId/title', updateCampaignTitle);
 
 // Scheduled campaigns
 router.get('/scheduled', getScheduledCampaigns);
@@ -98,8 +98,6 @@ router.post('/:campaignId/pause', pauseCampaign);
 router.post('/:campaignId/resume', resumeCampaign);
 
 // Progress and reporting
-router.get('/:campaignId/progress', getProgress);
-router.get('/:campaignId/report', generateReport);
 router.get('/:campaignId/report/download', downloadReport);
 
 module.exports = router;
