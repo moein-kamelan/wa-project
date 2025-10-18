@@ -8,7 +8,7 @@
   --color-neutral-secondary: #ece5dd;
   --color-neutral-tertiary: #D9D9D9;
   --color-btn-primary-normal: #25d366;
-  --color-btn-primary-hover: #29ef73;
+  --color-btn-primary-hover: #1FB256;
   --color-btn-primary-tapped: #1da450;
   --color-btn-primary-disable: #e0e0e0;
   --color-semantic-success: #4caf50;
@@ -28,7 +28,7 @@
 }
 
 @utility custom-btn {
-  @apply bg-btn-primary-normal text-white rounded-[55px] active:bg-btn-primary-tapped transition-all duration-200 hover:bg-btn-primary-hover shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] hover:scale-[98%];
+  @apply bg-btn-primary-normal text-white rounded-[55px] active:bg-btn-primary-tapped transition-all duration-200 hover:bg-btn-primary-hover shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] hover:scale-[98%] active:shadow-[inset_2px_4px_4px_0_rgba(0,0,0,0.25)] ;
 }
 
 @utility shadow-normal {

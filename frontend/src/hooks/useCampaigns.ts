@@ -78,15 +78,7 @@ function useDeleteCampaign(page: any) {
       return response.data;
     },
     onSuccess: (response, campaignId) => {
-      // queryClient.setQueryData(["campaigns", page], (prev: any) => {
-      //   console.log("prev:", prev);
-      //   return {
-      //     ...prev,
-      //     campaigns: prev.campaigns.filter(
-      //       (campaign: any) => campaign.id !== campaignId
-      //     ),
-      //   };
-      // });
+
       queryClient.invalidateQueries({ queryKey: ["campaigns" , page] });
     },
   });

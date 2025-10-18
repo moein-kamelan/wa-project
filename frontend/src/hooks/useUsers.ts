@@ -18,6 +18,7 @@ function useUsers(page?: number, limit: number = 6) {
       });
       return response.data;
     },
+    placeholderData: (prevData) => prevData,
   });
 }
 

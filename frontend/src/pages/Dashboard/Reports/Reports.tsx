@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import ReportsHeader from "../../../components/modules/Dashboard/Reports/ReporstsHeader/ReportsHeader";
-import Select, { components } from "react-select";
 import qs from "qs";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
@@ -11,17 +10,11 @@ import CheckboxInput from "../../../components/modules/CheckboxInput/CheckboxInp
 import Pagination from "../../../components/modules/Pagination/Pagination";
 import RecipientsDetails from "../../../components/templates/Dashboard/Reports/RecipientsDetails/RecipientDetails";
 
-const options = [
-  { value: "متعادل", label: "فعال" },
-  { value: "strawberry", label: "غیر فعال" },
-  { value: "vanilla", label: "مسدود" },
-];
-
 function Reports() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [campaigns, setCampaigns] = useState<any[] | null>(null);
   const [pagination, setPagination] = useState<any>();
-  const [date, setDate] = useState<any>(null);
+  const [date, setDate] = useState<DateObject | null>(null);
   const [title, setTitle] = useState<string>("");
   const headerTitle = calculateTitle(searchParams.get("status"));
   const [recipientsDetailsCampaign, setRecipientsDetailsCampaign] =
@@ -51,7 +44,7 @@ function Reports() {
           },
         });
         console.log("response:", response);
-        setRecipientsDetailsCampaign(null)
+        setRecipientsDetailsCampaign(null);
         setCampaigns(response.data.campaigns);
         setPagination(response.data.pagination);
       } catch (error) {
@@ -126,18 +119,50 @@ function Reports() {
   };
 
   const handleBackPageClick = () => {
-    if (page > 1) setSearchParams({ page: String(page - 1) });
+    if (page > 1) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(page - 1));
+      setSearchParams(params);
+    }
   };
   const handleNextPageClick = () => {
-    if (pagination && page < pagination.pages)
-      setSearchParams({ page: String(page + 1) });
+    if (pagination && page < pagination.pages) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(page + 1));
+      setSearchParams(params);
+    }
   };
 
   return (
     <div className="flex flex-col min-h-screen relative ">
       <div className="inset-0 w-full h-screen bg-secondary/35 absolute z-10 hidden"></div>
       <ReportsHeader title={headerTitle} />
-      <div className="flex flex-col  bg-white mx-16 grow mb-12.5 rounded-2xl shadow-[1px_2px_5px_0px_rgba(0,0,0,0.25)] pt-4.5 px-8 gap-y-3.5">
+      <div className="flex flex-col relative  bg-white mx-16 grow mb-12.5 rounded-2xl shadow-[1px_2px_5px_0px_rgba(0,0,0,0.25)] pt-4.5 px-8 gap-y-3.5">
+        {recipientsDetailsCampaign && (
+          <button
+            className="absolute left-2 top-2"
+            onClick={() => setRecipientsDetailsCampaign(null)}
+          >
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                opacity="0.4"
+                d="M32.38 4H15.62C8.34 4 4 8.34 4 15.62V32.36C4 39.66 8.34 44 15.62 44H32.36C39.64 44 43.98 39.66 43.98 32.38V15.62C44 8.34 39.66 4 32.38 4Z"
+                fill="#075E54"
+              />
+              <path
+                d="M33.5459 31.4247L26.1213 24.0001L33.5459 16.5755C34.1258 15.9956 34.1258 15.034 33.5459 14.4541C32.9661 13.8743 32.0044 13.8743 31.4246 14.4541L24 21.8788L16.5754 14.4541C15.9956 13.8743 15.0339 13.8743 14.4541 14.4541C13.8742 15.034 13.8742 15.9956 14.4541 16.5755L21.8787 24.0001L14.4541 31.4247C13.8742 32.0045 13.8742 32.9662 14.4541 33.546C15.0339 34.1259 15.9956 34.1259 16.5754 33.546L24 26.1214L31.4246 33.546C32.0044 34.1259 32.9661 34.1259 33.5459 33.546C34.1258 32.9662 34.1258 32.0045 33.5459 31.4247Z"
+                fill="#075E54"
+              />
+            </svg>
+          </button>
+        )}
+
         <div className="grow pb-4 rounded-[20px] flex flex-col">
           <div className="flex items-center  mb-5 gap-3 flex-wrap">
             <div className="flex max-md:grow rounded-[5px] border-[1.5px] border-neutral-tertiary py-1.75 pr-2 gap-3 ">
@@ -192,7 +217,8 @@ function Reports() {
 
             <DatePicker
               value={date}
-              highlightToday={false}
+              highlightToday={true}
+              currentDate={false}
               onChange={(dateObject) => {
                 if (!dateObject) return;
 
@@ -208,6 +234,7 @@ function Reports() {
                   params.set("endDate", endISO);
                   return params;
                 });
+                setDate(dateObject);
               }}
               calendar={persian}
               locale={persian_fa}
@@ -216,7 +243,7 @@ function Reports() {
               mapDays={({ date }) => {
                 if (date.weekDay.index === 6) {
                   // جمعه
-                  return { className: "weekend-day", disabled: true };
+                  return { className: "weekend-day" };
                 }
               }}
               containerClassName="w-[263px] max-md:w-full "
@@ -346,121 +373,26 @@ function Reports() {
                           <th scope="col" className=" border border-secondary">
                             <button className="flex items-center  justify-evenly  w-full   p-3">
                               <span>عنوان کمپین</span>
-
-                              <svg
-                                className="shrink-0"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                                  fill="#075E54"
-                                />
-                                <path
-                                  opacity="0.4"
-                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                                  fill="#075E54"
-                                />
-                              </svg>
                             </button>
                           </th>
                           <th scope="col" className="border border-secondary ">
                             <button className="flex items-center justify-evenly w-full   p-3">
                               <span>پیام های ارسالی</span>
-
-                              <svg
-                                className="shrink-0"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                                  fill="#075E54"
-                                />
-                                <path
-                                  opacity="0.4"
-                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                                  fill="#075E54"
-                                />
-                              </svg>
                             </button>
                           </th>
                           <th scope="col" className="border border-secondary ">
                             <button className="flex items-center justify-evenly w-full   p-3">
                               <span>تاریخ</span>
-
-                              <svg
-                                className="shrink-0"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                                  fill="#075E54"
-                                />
-                                <path
-                                  opacity="0.4"
-                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                                  fill="#075E54"
-                                />
-                              </svg>
                             </button>
                           </th>
                           <th scope="col" className=" border border-secondary">
                             <button className="flex items-center justify-evenly w-full   p-3">
                               <span>وضعیت</span>
-
-                              <svg
-                                className="shrink-0"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                                  fill="#075E54"
-                                />
-                                <path
-                                  opacity="0.4"
-                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                                  fill="#075E54"
-                                />
-                              </svg>
                             </button>
                           </th>
                           <th scope="col" className=" border border-secondary">
                             <button className="flex items-center justify-evenly w-full   p-3">
                               <span>عملیات</span>
-
-                              <svg
-                                className="shrink-0"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                                  fill="#075E54"
-                                />
-                                <path
-                                  opacity="0.4"
-                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                                  fill="#075E54"
-                                />
-                              </svg>
                             </button>
                           </th>
                         </tr>
@@ -521,23 +453,5 @@ function Reports() {
     </div>
   );
 }
-
-const DropdownIndicator = (props: any) => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <svg
-        className="size-7.5"
-        viewBox="0 0 31 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M15.5002 27.0885L0.478805 0.761593L30.7893 0.916123L15.5002 27.0885Z"
-          fill="#D9D9D9"
-        />
-      </svg>
-    </components.DropdownIndicator>
-  );
-};
 
 export default Reports;
