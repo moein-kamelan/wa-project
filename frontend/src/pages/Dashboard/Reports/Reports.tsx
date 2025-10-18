@@ -8,6 +8,8 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { axiosInstance } from "../../../utils/axios";
 import CheckboxInput from "../../../components/modules/CheckboxInput/CheckboxInput";
+import Pagination from "../../../components/modules/Pagination/Pagination";
+import RecipientsDetails from "../../../components/templates/Dashboard/Reports/RecipientsDetails/RecipientDetails";
 
 const options = [
   { value: "متعادل", label: "فعال" },
@@ -22,6 +24,8 @@ function Reports() {
   const [date, setDate] = useState<any>(null);
   const [title, setTitle] = useState<string>("");
   const headerTitle = calculateTitle(searchParams.get("status"));
+  const [recipientsDetailsCampaign, setRecipientsDetailsCampaign] =
+    useState<any>(null);
 
   const page = Number(searchParams.get("page")) || 1;
   const startDate = searchParams.get("startDate");
@@ -33,7 +37,7 @@ function Reports() {
         const response = await axiosInstance.get(`/api/campaigns`, {
           params: {
             page,
-            limit: 6,
+            limit: 7,
             status: mainStatus,
             title,
             startDate,
@@ -47,7 +51,7 @@ function Reports() {
           },
         });
         console.log("response:", response);
-
+        setRecipientsDetailsCampaign(null)
         setCampaigns(response.data.campaigns);
         setPagination(response.data.pagination);
       } catch (error) {
@@ -97,21 +101,12 @@ function Reports() {
     }
   }
 
-  const handleBackPageClick = () => {
-    if (page > 1) setSearchParams({ page: String(page - 1) });
-  };
-  const handleNextPageClick = () => {
-    if (pagination && page < pagination.pages)
-      setSearchParams({ page: String(page + 1) });
-  };
-
   const generateStatus = (status: string) => {
     switch (status) {
-      case "DRAFT":
-      case "READY": {
+      case "RUNNING": {
         return (
           <span className="text-4xl  bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-            در انتظار ارسال
+            در حال ارسال
           </span>
         );
       }
@@ -119,14 +114,23 @@ function Reports() {
       case "COMPLETED": {
         return <span className="text-primary">ارسال شد</span>;
       }
-      case "RUNNING": {
-        return <span className="text-neutral-tertiary">در حال ارسال</span>;
+      case "DRAFT":
+      case "READY": {
+        return <span className="text-neutral-tertiary">در انتظار ارسال</span>;
       }
       case "PAUSED":
       case "FAILED": {
         return <span className="text-semantic-error ">ارسال ناموفق</span>;
       }
     }
+  };
+
+  const handleBackPageClick = () => {
+    if (page > 1) setSearchParams({ page: String(page - 1) });
+  };
+  const handleNextPageClick = () => {
+    if (pagination && page < pagination.pages)
+      setSearchParams({ page: String(page + 1) });
   };
 
   return (
@@ -318,521 +322,199 @@ function Reports() {
             <img src="../../../../../public/images/excel.png" alt="excel" />
           </div>
           <div className="flex flex-col w-full grow">
-            {/* <div className=" grow  bg-neutral-tertiary/47 rounded-[20px] p-3.5">
-              <div className="flex items-center gap-4">
-                <Select
-                  options={options}
-                  placeholder="فیلتر"
-                  components={{ DropdownIndicator }}
-                  classNames={{
-                    control: () =>
-                      "!border !border-[1.5px] !border-secondary rounded-[5px] *:h-9 !cursor-pointer     shadow-sm   !outline !outline-secondary focus:shadow-0 md:w-[263px] text-xl max-w-[222px]   ",
-                    option: ({ isFocused, isSelected }) =>
-                      `px-3 py-2 cursor-pointer !text-2xl border-r-6 border-neutral-tertiary ${
-                        isSelected
-                          ? "bg-green-600 text-white !cursor-pointer "
-                          : isFocused
-                          ? "!bg-neutral-primary !text-secondary border-secondary/70 !cursor-pointer"
-                          : "bg-white !text-gray-black !cursor-pointer"
-                      }`,
-                    menu: () =>
-                      "!mt-0 border border-gray-200 font-B-Homa rounded-lg shadow-lg bg-white overflow-hidden  max-w-[263px]",
-                    placeholder: () =>
-                      "   !text-neutral-tertiary text-lg text-xl  ",
-                    singleValue: () => "!text-primary ",
-                  }}
-                />
-              </div>
-
-              <div
-                className="relative    rounded-2xl border-[3px] border-secondary   mt-3  w-full overflow-auto     [&::-webkit-scrollbar]:w-3
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:w-9/12
-  [&::-webkit-scrollbar-track]:bg-neutral-secondary
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-[#1DA45070]"
-              >
-                <table className=" w-full border-collapse text-center table-auto overflow-hidden ">
-                  <thead className="bg-neutral-primary/80 text-gray-black *:font-B-Nazanin xl:text-2xl  text-nowrap border-b-[3px] border-secondary">
-                    <tr>
-                      <th scope="col" className=" border border-secondary"></th>
-                      <th scope="col" className=" border border-secondary">
-                        <button className="flex items-center  justify-evenly  w-full p-2  ">
-                          <span>شماره مخاطب</span>
-
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className="border border-secondary ">
-                        <button className="flex items-center justify-evenly w-full p-2  ">
-                          <span>تاریخ ارسال</span>
-
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className="border border-secondary ">
-                        <button className="flex items-center justify-evenly w-full p-2  ">
-                          <span>وضعیت</span>
-
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className=" border border-secondary">
-                        <button className="flex items-center justify-evenly w-full p-2  ">
-                          <span>عملیات</span>
-
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="*:hover:bg-neutral-secondary">
-                    <tr className="p-2 ">
-                      <td className="border border-secondary p-2 ">
-                        <CheckboxInput/>
-                      </td>
-                      <td className="border border-secondary p-2  lg:text-2xl">
-                        admin
-                      </td>
-
-                      <td className="border border-secondary p-2  lg:text-2xl">
-                        12/6
-                      </td>
-                      <td className="border border-secondary p-2 ">
-                        <span className="text-primary text-2xl">ارسال شد</span>
-                      </td>
-                      <td className="border border-secondary p-2 ">
-                        <button
-                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
-                          onClick={() => setIsModalOpen(true)}
-                        >
-                          جزئیات
-                        </button>
-                      </td>
-                    </tr>
-                    <tr className="p-2 ">
-                      <td className="border border-secondary p-2 ">
-                        <label className="flex items-center justify-center w-full h-full ">
-                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                          <input type="checkbox" className="hidden" />
-                        </label>
-                      </td>
-                      <td className="border border-secondary p-2  lg:text-2xl">
-                        admin
-                      </td>
-
-                      <td className="border border-secondary p-2  lg:text-2xl">
-                        12/6
-                      </td>
-                      <td className="border border-secondary p-2 ">
-                        <span className="text-primary text-2xl">ارسال شد</span>
-                      </td>
-                      <td className="border border-secondary p-2 px-3">
-                        <button
-                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
-                          onClick={() => setIsModalOpen(true)}
-                        >
-                          جزئیات
-                        </button>
-                      </td>
-                    </tr>
-                    <tr className="p-2 ">
-                      <td className="border border-secondary p-2 px-3">
-                        <label className="flex items-center justify-center w-full h-full ">
-                          <div className="size-8 border border-secondary rounded-xl cursor-pointer"></div>
-                          <input type="checkbox" className="hidden" />
-                        </label>
-                      </td>
-                      <td className="border border-secondary p-2 px-3 lg:text-2xl">
-                        admin
-                      </td>
-
-                      <td className="border border-secondary p-2 px-3 lg:text-2xl">
-                        12/6
-                      </td>
-                      <td className="border border-secondary p-2 px-3">
-                        <span className="text-primary text-2xl">ارسال شد</span>
-                      </td>
-                      <td className="border border-secondary p-2 px-3">
-                        <button
-                          className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-[93px] h-7  "
-                          onClick={() => setIsModalOpen(true)}
-                        >
-                          جزئیات
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div> */}
-
-            <div
-              className="grow max-h-[562px]    overflow-y-auto overflow-x-auto [&::-webkit-scrollbar]:w-3
+            {recipientsDetailsCampaign ? (
+              <RecipientsDetails
+                recipientsDetailsCampaign={recipientsDetailsCampaign}
+              />
+            ) : (
+              <div className="flex flex-col grow">
+                <div
+                  className="grow max-h-[562px]     overflow-x-auto [&::-webkit-scrollbar]:w-3
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:w-9/12
   [&::-webkit-scrollbar-track]:bg-neutral-tertiary
   [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-[#1DA45070] pl-2 pb-3 "
-            >
-              <div className="relative  max-[1370px]:w-fit rounded-2xl border-[3px] border-secondary     overflow-hidden">
-                <table className="  w-full border-collapse text-center table-auto ">
-                  <thead className="bg-neutral-primary/80 text-gray-black *:font-B-Nazanin xl:text-2xl 2xl:text-[32px] text-nowrap border-b-[3px] border-secondary">
-                    <tr>
-                      <th scope="col" className=" border border-secondary"></th>
-                      <th scope="col" className=" border border-secondary">
-                        <button className="flex items-center  justify-evenly  w-full   p-3">
-                          <span>عنوان کمپین</span>
+  [&::-webkit-scrollbar-thumb]:bg-[#1DA45070]  pb-3 "
+                >
+                  <div className="relative  max-[1370px]:w-fit rounded-2xl border-[3px] border-secondary     overflow-hidden">
+                    <table className="  w-full border-collapse text-center table-auto ">
+                      <thead className="bg-neutral-primary/80 text-gray-black *:font-B-Nazanin xl:text-2xl 2xl:text-[32px] text-nowrap border-b-[3px] border-secondary">
+                        <tr>
+                          <th scope="col" className=" border border-secondary">
+                            <CheckboxInput />
+                          </th>
+                          <th scope="col" className=" border border-secondary">
+                            <button className="flex items-center  justify-evenly  w-full   p-3">
+                              <span>عنوان کمپین</span>
 
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className="border border-secondary ">
-                        <button className="flex items-center justify-evenly w-full   p-3">
-                          <span>پیام های ارسالی</span>
+                              <svg
+                                className="shrink-0"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                                  fill="#075E54"
+                                />
+                                <path
+                                  opacity="0.4"
+                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                                  fill="#075E54"
+                                />
+                              </svg>
+                            </button>
+                          </th>
+                          <th scope="col" className="border border-secondary ">
+                            <button className="flex items-center justify-evenly w-full   p-3">
+                              <span>پیام های ارسالی</span>
 
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className="border border-secondary ">
-                        <button className="flex items-center justify-evenly w-full   p-3">
-                          <span>تاریخ</span>
+                              <svg
+                                className="shrink-0"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                                  fill="#075E54"
+                                />
+                                <path
+                                  opacity="0.4"
+                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                                  fill="#075E54"
+                                />
+                              </svg>
+                            </button>
+                          </th>
+                          <th scope="col" className="border border-secondary ">
+                            <button className="flex items-center justify-evenly w-full   p-3">
+                              <span>تاریخ</span>
 
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className=" border border-secondary">
-                        <button className="flex items-center justify-evenly w-full   p-3">
-                          <span>وضعیت</span>
+                              <svg
+                                className="shrink-0"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                                  fill="#075E54"
+                                />
+                                <path
+                                  opacity="0.4"
+                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                                  fill="#075E54"
+                                />
+                              </svg>
+                            </button>
+                          </th>
+                          <th scope="col" className=" border border-secondary">
+                            <button className="flex items-center justify-evenly w-full   p-3">
+                              <span>وضعیت</span>
 
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                      <th scope="col" className=" border border-secondary">
-                        <button className="flex items-center justify-evenly w-full   p-3">
-                          <span>عملیات</span>
+                              <svg
+                                className="shrink-0"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                                  fill="#075E54"
+                                />
+                                <path
+                                  opacity="0.4"
+                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                                  fill="#075E54"
+                                />
+                              </svg>
+                            </button>
+                          </th>
+                          <th scope="col" className=" border border-secondary">
+                            <button className="flex items-center justify-evenly w-full   p-3">
+                              <span>عملیات</span>
 
-                          <svg
-                            className="shrink-0"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
-                              fill="#075E54"
-                            />
-                            <path
-                              opacity="0.4"
-                              d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
-                              fill="#075E54"
-                            />
-                          </svg>
-                        </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="*:hover:bg-neutral-secondary">
-                    {campaigns?.map((campaign) => (
-                      <tr key={campaign.id} className="p-2 ">
-                        <td className="border border-secondary py-2.5 px-3">
-                        <CheckboxInput/>
-                        </td>
-                        <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
-                          {campaign.title}
-                        </td>
-                        <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
-                          {campaign?.deliveredCount} / {campaign?.totalRecipients}
-                        </td>
-                        <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
-                          {new Date(campaign.createdAt).toLocaleString(
-                            "fa-IR",
-                            {
-                              year: "numeric",
-                              month: "numeric",
-                              day: "numeric",
-                            }
-                          )}
-                        </td>
-                        <td className="border border-secondary py-2.5 px-3 *:text-2xl">
-                          {generateStatus(campaign.status)}
-                        </td>
-                        <td className="border border-secondary py-2.5 px-3">
-                          <button
-                            className="custom-btn  text-lg md:text-[20px] text-gray-black bg-neutral-tertiary w-30 h-8 lg:w-[144px] lg:h-11"
-                            onClick={() => setIsModalOpen(true)}
-                          >
-                            جزئیات
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                              <svg
+                                className="shrink-0"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.98 6.19L7.26999 2.47998C7.19999 2.40998 7.10998 2.35 7.00998 2.31C6.99998 2.31 6.98995 2.30999 6.97995 2.29999C6.89995 2.26999 6.80994 2.25 6.71994 2.25C6.51994 2.25 6.32997 2.32997 6.18997 2.46997L2.46994 6.19C2.17994 6.48 2.17994 6.96 2.46994 7.25C2.75994 7.54 3.24 7.54 3.53 7.25L5.97995 4.79999V21C5.97995 21.41 6.31995 21.75 6.72995 21.75C7.13995 21.75 7.47995 21.41 7.47995 21V4.81L9.91995 7.25C10.07 7.4 10.26 7.46997 10.45 7.46997C10.64 7.46997 10.83 7.4 10.98 7.25C11.27 6.96 11.27 6.49 10.98 6.19Z"
+                                  fill="#075E54"
+                                />
+                                <path
+                                  opacity="0.4"
+                                  d="M21.53 16.75C21.24 16.46 20.7599 16.46 20.4699 16.75L18.02 19.2V3C18.02 2.59 17.68 2.25 17.27 2.25C16.86 2.25 16.52 2.59 16.52 3V19.19L14.08 16.75C13.79 16.46 13.31 16.46 13.02 16.75C12.73 17.04 12.73 17.52 13.02 17.81L16.73 21.52C16.8 21.59 16.89 21.65 16.99 21.69C17 21.69 17.01 21.69 17.02 21.7C17.1 21.73 17.19 21.75 17.28 21.75C17.48 21.75 17.67 21.67 17.81 21.53L21.53 17.81C21.82 17.51 21.82 17.04 21.53 16.75Z"
+                                  fill="#075E54"
+                                />
+                              </svg>
+                            </button>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="*:hover:bg-neutral-secondary">
+                        {campaigns?.map((campaign) => (
+                          <tr key={campaign.id} className="p-2 ">
+                            <td className="border border-secondary py-2.5 px-3">
+                              <CheckboxInput />
+                            </td>
+                            <td className="border border-secondary py-2.5 px-3 lg:text-2xl overflow-x-hidden text-ellipsis max-w-50">
+                              {campaign.title}
+                            </td>
+                            <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
+                              {campaign?.deliveredCount} /{" "}
+                              {campaign?.totalRecipients}
+                            </td>
+                            <td className="border border-secondary py-2.5 px-3 lg:text-2xl">
+                              {new Date(campaign.createdAt).toLocaleString(
+                                "fa-IR",
+                                {
+                                  year: "numeric",
+                                  month: "numeric",
+                                  day: "numeric",
+                                }
+                              )}
+                            </td>
+                            <td className="border border-secondary py-2.5 px-3 *:text-2xl">
+                              {generateStatus(campaign.status)}
+                            </td>
+                            <td className="border border-secondary py-2.5 px-3">
+                              <button
+                                className="custom-btn  py-2.5 px-3"
+                                onClick={() =>
+                                  setRecipientsDetailsCampaign(campaign)
+                                }
+                              >
+                                مشاهده جزئیات
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <Pagination
+                  pagination={pagination}
+                  onClickBackPage={handleBackPageClick}
+                  onClickNextPage={handleNextPageClick}
+                />
               </div>
-            </div>
-
-            <div className="flex items-center justify-center">
-              <button onClick={handleBackPageClick}>
-                <svg
-                  className="rotate-y-180"
-                  width="55"
-                  height="55"
-                  viewBox="0 0 55 55"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g filter="url(#filter0_d_1493_1722)">
-                    <path
-                      opacity="0.4"
-                      d="M24.6815 19.5249L36.2544 28.2103V41.0666C36.2544 43.2666 33.5961 44.3666 32.0377 42.8082L20.1669 30.9374C18.2648 29.0353 18.2648 25.9416 20.1669 24.0395L24.6815 19.5249Z"
-                      fill="#25D366"
-                    />
-                    <path
-                      d="M36.2544 13.9334V28.2105L24.6815 19.5251L32.0377 12.1688C33.5961 10.6334 36.2544 11.7334 36.2544 13.9334Z"
-                      fill="#25D366"
-                    />
-                  </g>
-                  <defs>
-                    <filter
-                      id="filter0_d_1493_1722"
-                      x="-4"
-                      y="0"
-                      width="63"
-                      height="63"
-                      filterUnits="userSpaceOnUse"
-                      colorInterpolationFilters="sRGB"
-                    >
-                      <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                      <feColorMatrix
-                        in="SourceAlpha"
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                        result="hardAlpha"
-                      />
-                      <feOffset dy="4" />
-                      <feGaussianBlur stdDeviation="2" />
-                      <feComposite in2="hardAlpha" operator="out" />
-                      <feColorMatrix
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in2="BackgroundImageFix"
-                        result="effect1_dropShadow_1493_1722"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="effect1_dropShadow_1493_1722"
-                        result="shape"
-                      />
-                    </filter>
-                  </defs>
-                </svg>
-              </button>
-
-              <span className="text-secondary text-xl">
-                صفحه {pagination?.page} از {pagination?.pages}
-              </span>
-              <button onClick={handleNextPageClick}>
-                <svg
-                  width="55"
-                  height="55"
-                  viewBox="0 0 55 55"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g filter="url(#filter0_d_1493_1722)">
-                    <path
-                      opacity="0.4"
-                      d="M24.6815 19.5249L36.2544 28.2103V41.0666C36.2544 43.2666 33.5961 44.3666 32.0377 42.8082L20.1669 30.9374C18.2648 29.0353 18.2648 25.9416 20.1669 24.0395L24.6815 19.5249Z"
-                      fill="#25D366"
-                    />
-                    <path
-                      d="M36.2544 13.9334V28.2105L24.6815 19.5251L32.0377 12.1688C33.5961 10.6334 36.2544 11.7334 36.2544 13.9334Z"
-                      fill="#25D366"
-                    />
-                  </g>
-                  <defs>
-                    <filter
-                      id="filter0_d_1493_1722"
-                      x="-4"
-                      y="0"
-                      width="63"
-                      height="63"
-                      filterUnits="userSpaceOnUse"
-                      colorInterpolationFilters="sRGB"
-                    >
-                      <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                      <feColorMatrix
-                        in="SourceAlpha"
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                        result="hardAlpha"
-                      />
-                      <feOffset dy="4" />
-                      <feGaussianBlur stdDeviation="2" />
-                      <feComposite in2="hardAlpha" operator="out" />
-                      <feColorMatrix
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in2="BackgroundImageFix"
-                        result="effect1_dropShadow_1493_1722"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="effect1_dropShadow_1493_1722"
-                        result="shape"
-                      />
-                    </filter>
-                  </defs>
-                </svg>
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>

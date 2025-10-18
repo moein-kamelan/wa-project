@@ -32,11 +32,11 @@ export interface Step5Ref {
 
 const Step5 = forwardRef<Step5Ref, Step5Props>(({ onSubmit }, ref) => {
   const validationSchema = Yup.object<Step5Values>().shape({
-    hour: Yup.string()
+    hour: Yup.number()
       .min(0, "ساعت حداقل باید صفر یا بیشتر باشد")
       .max(23, "ساعت باید کمتر یا برابر ۲۳ باشد")
       .required("انتخاب ساعت الزامی است"),
-    minute: Yup.string()
+    minute: Yup.number()
       .min(0, "دقیقه حداقل باید صفر یا بیشتر باشد")
       .max(59, "دقیقه باید کمتر یا برابر ۵۹ باشد")
       .required("انتخاب دقیقه الزامی است"),

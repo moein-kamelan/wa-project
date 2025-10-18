@@ -103,7 +103,7 @@ function NewCampaign() {
       setUploadMessage("در حال آپلود فایل ...");
 
       await axiosInstance.post(
-        "/api/campaigns/68e61f5b9c887771c55f86ff/recipients",
+        "/api/campaigns/2/recipients",
         formData,
         {
           headers: {

@@ -28,7 +28,7 @@
 }
 
 @utility custom-btn {
-  @apply bg-primary text-white rounded-[55px] active:bg-btn-primary-tapped transition-all duration-200 hover:bg-btn-primary-hover shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] hover:scale-[98%];
+  @apply bg-btn-primary-normal text-white rounded-[55px] active:bg-btn-primary-tapped transition-all duration-200 hover:bg-btn-primary-hover shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] hover:scale-[98%];
 }
 
 @utility shadow-normal {

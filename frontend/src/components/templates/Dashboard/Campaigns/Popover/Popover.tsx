@@ -74,7 +74,7 @@ function Popover({
       <button
         className="hover:bg-white/20 h-7.5"
         onClick={() => {
-          if (campaign.status === "running") {
+          if (campaign.status === "RUNNING") {
             showWarnToast("شما مجاز به حذف کمپین در حال اجرا نیستید ");
             return;
           }

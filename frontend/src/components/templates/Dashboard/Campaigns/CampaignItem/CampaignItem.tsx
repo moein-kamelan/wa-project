@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Tooltip from "../../../modules/Dashboard/Tooltip/Tooltip";
-import Popover from "../Campaigns/Popover/Popover";
-import { usePutCampaignTitle } from "../../../../hooks/useCampaigns";
+import Tooltip from "../../../../modules/Dashboard/Tooltip/Tooltip";
+import Popover from "../Popover/Popover";
+import { usePutCampaignTitle } from "../../../../../hooks/useCampaigns";
 
 type campaignItemProps = {
   campaign: any;
@@ -65,7 +65,7 @@ function CampaignItem({
   return (
     <div
       key={campaign.id}
-      className="bg-white px-10.5 py-[21px] grid grid-cols-[2fr_1fr_2fr_2fr_42px] items-center justify-center rounded-tl-[6px] rounded-tr-[6px] text-2xl shadow-[2px_-4px_4px_0px_rgba(0,0,0,0.25)] hover:!shadow-[8px_0px_20px_0px_rgba(7,94,84,1)] hover:scale-101 transition duration-300"
+      className="bg-white px-10.5 py-[21px] grid grid-cols-[2fr_1fr_2fr_2fr_42px] gap-4 items-center justify-center rounded-tl-[6px] rounded-tr-[6px] text-2xl shadow-[2px_-4px_4px_0px_rgba(0,0,0,0.25)] hover:!shadow-[8px_0px_20px_0px_rgba(7,94,84,1)] hover:scale-101 transition duration-300"
     >
       <div className="flex items-center gap-2">
         <button
@@ -129,9 +129,9 @@ function CampaignItem({
             setTitle(e.target.value);
           }}
           readOnly={!editable}
-          className={`read-only:cursor-default  ${
+          className={`read-only:cursor-default  max-w-50 overflow-x-hidden text-ellipsis ${
             editable
-              ? "bg-neutral-tertiary  py-1 px-2 rounded-[6px] w-full shadow-[inset_2px_2px_4px_0px_rgba(0,0,0,0.25)]"
+              ? "bg-neutral-tertiary  py-1 px-2 rounded-[6px]  shadow-[inset_2px_2px_4px_0px_rgba(0,0,0,0.25)]"
               : ""
           }`}
         />
@@ -146,7 +146,7 @@ function CampaignItem({
         >
           <path
             d="M22 12.98V15.5C22 19 20 20.5 17 20.5H7"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -154,7 +154,7 @@ function CampaignItem({
           />
           <path
             d="M2 8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -162,7 +162,7 @@ function CampaignItem({
           />
           <path
             d="M17 9L13.87 11.5C12.84 12.32 11.15 12.32 10.12 11.5L7 9"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -170,7 +170,7 @@ function CampaignItem({
           />
           <path
             d="M2 16.5H8"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -178,7 +178,7 @@ function CampaignItem({
           />
           <path
             d="M2 12.5H5"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -201,7 +201,7 @@ function CampaignItem({
         >
           <path
             d="M3 13.01V8.5C3 5.5 4.5 3.5 8 3.5H16C19.5 3.5 21 5.5 21 8.5V16.36C20.27 15.53 19.2 15 18 15C15.79 15 14 16.79 14 19C14 19.75 14.21 20.46 14.58 21.06C14.79 21.42 15.06 21.74 15.37 22H8C4.5 22 3 20 3 17"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -209,7 +209,7 @@ function CampaignItem({
           />
           <path
             d="M8 2V5"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -217,7 +217,7 @@ function CampaignItem({
           />
           <path
             d="M16 2V5"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -225,7 +225,7 @@ function CampaignItem({
           />
           <path
             d="M3.5 9.08984H20.5"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -233,7 +233,7 @@ function CampaignItem({
           />
           <path
             d="M18 23C20.2091 23 22 21.2091 22 19C22 16.7909 20.2091 15 18 15C15.7909 15 14 16.7909 14 19C14 21.2091 15.7909 23 18 23Z"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -241,7 +241,7 @@ function CampaignItem({
           />
           <path
             d="M19.4898 19.0498H16.5098"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -249,7 +249,7 @@ function CampaignItem({
           />
           <path
             d="M18 17.5898V20.5798"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="1.5"
             strokeMiterlimit="10"
             strokeLinecap="round"
@@ -257,21 +257,21 @@ function CampaignItem({
           />
           <path
             d="M11.9955 13.7002H12.0045"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M8.29431 13.7002H8.30329"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           <path
             d="M8.29431 16.7002H8.30329"
-            stroke="#25D366"
+            stroke="#404040"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
