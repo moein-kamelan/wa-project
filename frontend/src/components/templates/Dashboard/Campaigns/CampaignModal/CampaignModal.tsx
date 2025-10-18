@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act, useState } from "react";
 import Select, { components } from "react-select";
 import CheckboxInput from "../../../../modules/CheckboxInput/CheckboxInput";
 import Pagination from "../../../../modules/Pagination/Pagination";
@@ -15,7 +15,8 @@ const options = [
 
 function CampaignModal({ setOpenModal }: CampaignModalProps) {
   const [isOpenFilter, setIsOpenFilter] = React.useState(false);
-  
+  const [activeMenu, setActiveMenu] = useState<"status" | "phone">("status");
+
   const radius = 46;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (80 / 100) * circumference;
@@ -128,54 +129,143 @@ function CampaignModal({ setOpenModal }: CampaignModalProps) {
 
       <div className=" flex flex-col grow  bg-neutral-tertiary/47 rounded-[20px] p-3.5 pb-0.5">
         <div className="flex items-center gap-4">
-
           <div className="flex flex-col relative">
-            <button onClick={() => setIsOpenFilter(!isOpenFilter)} className={`border-[1.5px] border-neutral-tertiary rounded-[5px] *:h-9 !cursor-pointer     shadow-sm    focus:shadow-0 md:w-[263px] text-xl max-w-[222px]  flex items-center justify-between bg-white pr-3 pl-1.5 ${isOpenFilter ? "!border-neutral-primary" : ""}`}>
+            <button
+              onClick={() => setIsOpenFilter(!isOpenFilter)}
+              className={`border-[1.5px] border-neutral-tertiary rounded-[5px] *:h-9 !cursor-pointer     shadow-sm    focus:shadow-0 md:w-[263px] text-xl max-w-[222px]  flex items-center justify-between bg-white pr-3 pl-1.5 ${
+                isOpenFilter ? "!border-neutral-primary" : ""
+              }`}
+            >
               <div className="flex items-center gap-1">
-            <svg className="shrink-0 size-6.5"  viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M9.77148 3.6665H34.2281C36.2631 3.6665 37.9315 5.33482 37.9315 7.36982V11.4398C37.9315 12.9248 36.9964 14.7765 36.0798 15.6932" stroke="#25D366" stroke-width="2.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M26.2534 34.9614C26.2534 36.0797 25.52 37.5464 24.585 38.1147L22 39.783C19.5984 41.268 16.2617 39.5997 16.2617 36.6297V26.8214C16.2617 25.5197 15.5284 23.8514 14.7767 22.9347L7.73664 15.528C6.80164 14.593 6.06836 12.943 6.06836 11.8247" stroke="#25D366" stroke-width="2.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M29.4619 30.2865C32.702 30.2865 35.3286 27.66 35.3286 24.4199C35.3286 21.1798 32.702 18.5532 29.4619 18.5532C26.2218 18.5532 23.5952 21.1798 23.5952 24.4199C23.5952 27.66 26.2218 30.2865 29.4619 30.2865Z" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M36.4286 31.3866L34.5952 29.5532" stroke="#25D366" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+                <svg
+                  className="shrink-0 size-6.5"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.77148 3.6665H34.2281C36.2631 3.6665 37.9315 5.33482 37.9315 7.36982V11.4398C37.9315 12.9248 36.9964 14.7765 36.0798 15.6932"
+                    stroke="#25D366"
+                    stroke-width="2.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M26.2534 34.9614C26.2534 36.0797 25.52 37.5464 24.585 38.1147L22 39.783C19.5984 41.268 16.2617 39.5997 16.2617 36.6297V26.8214C16.2617 25.5197 15.5284 23.8514 14.7767 22.9347L7.73664 15.528C6.80164 14.593 6.06836 12.943 6.06836 11.8247"
+                    stroke="#25D366"
+                    stroke-width="2.5"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M29.4619 30.2865C32.702 30.2865 35.3286 27.66 35.3286 24.4199C35.3286 21.1798 32.702 18.5532 29.4619 18.5532C26.2218 18.5532 23.5952 21.1798 23.5952 24.4199C23.5952 27.66 26.2218 30.2865 29.4619 30.2865Z"
+                    stroke="#25D366"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M36.4286 31.3866L34.5952 29.5532"
+                    stroke="#25D366"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
 
-<span className="text-neutral-tertiary">فیلتر</span>
+                <span className="text-neutral-tertiary">فیلتر</span>
               </div>
-              
 
-               <svg
-
-        className={`size-6 text-neutral-tertiary transition duration-200 ${isOpenFilter ? "rotate-180 !text-neutral-primary "  : ""}`}
-        viewBox="0 0 31 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M15.5002 27.0885L0.478805 0.761593L30.7893 0.916123L15.5002 27.0885Z"
-          fill="currentColor"
-        />
-      </svg>
+              <svg
+                className={`size-6 text-neutral-tertiary transition duration-200 ${
+                  isOpenFilter ? "rotate-180 !text-neutral-primary " : ""
+                }`}
+                viewBox="0 0 31 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.5002 27.0885L0.478805 0.761593L30.7893 0.916123L15.5002 27.0885Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
 
+            <div
+              className={`bg-white absolute grid grid-cols-[auto_1fr] top-full left-0 w-full h-80  z-20 rounded-br-[6px] rounded-bl-[6px] border-[1.5px] border-neutral-tertiary overflow-hidden transition-all duration-200 max-h-0 ${
+                isOpenFilter ? "!max-h-45" : ""
+              }`}
+            >
+              <div className="bg-secondary flex flex-col w-25 pb-2 pt-0.5">
+                <div className=" group ">
+                  <button
+                    className={`text-white w-full py-3 hover:bg-white/20 ${
+                      activeMenu === "status" ? "bg-white/20" : ""
+                    }`}
+                    onMouseEnter={() => setActiveMenu("status")}
+                  >
+                    وضعیت پیام
+                  </button>
 
-            <div className={`absolute grid grid-cols-[auto_1fr] top-full left-0 w-full h-80 bg-black z-20 rounded-br-[6px] rounded-bl-[6px] border-[1.5px] border-neutral-tertiary overflow-hidden transition-all duration-200 max-h-0 ${isOpenFilter ? "!max-h-45" : ""}`} >
-            <div className="bg-secondary flex flex-col px-2 pb-2 pt-0.5">
-              <button className="text-white">وضعیت پیام</button>
-              <button className="text-white">شماره مخاطب</button>
-            </div>
-            <div className="bg-white flex flex-col">
+                  {activeMenu === "status" && (
+                    <div className=" absolute top-0 left-0 w-30 flex flex-col h-full *:shrink-0 ">
+                      <button className="h-8 hover:bg-neutral-primary">
+                        ارسال شد
+                      </button>
+                      <button className="h-8 hover:bg-neutral-primary">
+                        لغو شد
+                      </button>
+                      <button className="h-8 hover:bg-neutral-primary">
+                        ارسال نشد
+                      </button>
+                      <button className="h-8 hover:bg-neutral-primary">
+                        همه ی پیام ها
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className=" group">
+                  <button
+                    className={`text-white w-full py-3 hover:bg-white/20 ${
+                      activeMenu === "phone" ? "bg-white/20" : ""
+                    }`}
+                    onMouseEnter={() => setActiveMenu("phone")}
+                  >
+                    شماره مخاطب
+                  </button>
+
+                  {activeMenu === "phone" && (
+
+                        <div className=" absolute top-0 left-0 w-30 flex flex-col h-full *:shrink-0 py-2.5 px-1 gap-y-1  ">
+                    <span className="text-[12px]">شماره مخاطب</span>
+                    <input
+                      type="phone"
+                      className="p-2 border-2 border-secondary placeholder:text-neutral-tertiary rounded-[6px]"
+                      placeholder="09xxxxxxxxx"
+                    />
+                  </div>
+
+                  )}
+
               
-            </div>
+                </div>
+
+                <button className="custom-btn mt-auto text-base w-[82px] h-[26px] mx-auto ">
+                  اعمال فیلتر
+                </button>
+              </div>
             </div>
           </div>
 
-           <img
+          <img
             src="../../../../../public/images/excel.png"
             alt="excel"
             className="size-10"
-          /> 
-          
-          
+          />
+
           {/* <Select
             options={options}
             placeholder="فیلتر"
@@ -221,29 +311,21 @@ function CampaignModal({ setOpenModal }: CampaignModalProps) {
                   <th scope="col" className=" border border-secondary">
                     <button className="flex items-center  justify-evenly  w-full p-2  ">
                       <span>شماره مخاطب</span>
-
-                 
                     </button>
                   </th>
                   <th scope="col" className="border border-secondary ">
                     <button className="flex items-center justify-evenly w-full p-2  ">
                       <span>تاریخ ارسال</span>
-
-                 
                     </button>
                   </th>
                   <th scope="col" className="border border-secondary ">
                     <button className="flex items-center justify-evenly w-full p-2  ">
                       <span>وضعیت</span>
-
-                 
                     </button>
                   </th>
                   <th scope="col" className=" border border-secondary">
                     <button className="flex items-center justify-evenly w-full p-2  ">
                       <span>عملیات</span>
-
-                   
                     </button>
                   </th>
                 </tr>
@@ -310,7 +392,7 @@ function CampaignModal({ setOpenModal }: CampaignModalProps) {
                     <span className="text-primary text-2xl">ارسال شد</span>
                   </td>
                   <td className="border border-secondary p-2 px-3">
-                     <button className="custom-btn    flex items-center mx-auto gap-2 py-1.5 px-2.5">
+                    <button className="custom-btn    flex items-center mx-auto gap-2 py-1.5 px-2.5">
                       <svg
                         width="24"
                         height="24"
@@ -356,7 +438,7 @@ function CampaignModal({ setOpenModal }: CampaignModalProps) {
                     <span className="text-primary text-2xl">ارسال شد</span>
                   </td>
                   <td className="border border-secondary p-2 px-3">
-                     <button className="custom-btn    flex items-center mx-auto gap-2 py-1.5 px-2.5">
+                    <button className="custom-btn    flex items-center mx-auto gap-2 py-1.5 px-2.5">
                       <svg
                         width="24"
                         height="24"
